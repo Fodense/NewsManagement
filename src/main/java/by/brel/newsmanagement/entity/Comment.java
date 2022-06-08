@@ -19,7 +19,6 @@ public class Comment implements Serializable {
     private Long idComment;
 
     @Column(name = "date")
-    @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
     private Date dateCreatedComment;
 
     @Column(name = "text")
@@ -30,7 +29,6 @@ public class Comment implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "news_id")
-    @JsonIgnore
     private News news;
 
     @Override

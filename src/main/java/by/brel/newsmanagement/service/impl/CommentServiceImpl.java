@@ -1,6 +1,8 @@
 package by.brel.newsmanagement.service.impl;
 
+import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.entity.Comment;
+import by.brel.newsmanagement.mapper.MapperComment;
 import by.brel.newsmanagement.repository.CommentRepository;
 import by.brel.newsmanagement.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -15,29 +18,42 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private MapperComment mapperComment;
+
     @Override
-    public List<Comment> getAllComment() {
-        return commentRepository.findAll();
+    public List<CommentDto> getAllComment() {
+        return commentRepository.findAll().stream()
+                .map(comment -> mapperComment.convertCommentToCommentDto(comment))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Comment getCommentByID(long id) {
-        return commentRepository.findById(id).orElse(null);
+    public CommentDto getCommentByID(long id) {
+        Comment comment = commentRepository.findById(id).orElse(null);
+
+        return mapperComment.convertCommentToCommentDto(comment);
     }
 
     @Override
-    public Comment saveComment(Comment comment) {
-        comment.setDateCreatedComment(new Date());
+    public CommentDto saveComment(CommentDto commentDto) {
+        commentDto.setDateCreatedComment(new Date());
 
-        return commentRepository.save(comment);
+        Comment comment = commentRepository.save(mapperComment.convertCommentDtoToComment(commentDto));
+
+        commentDto.setIdComment(comment.getIdComment());
+
+        return commentDto;
     }
 
     @Override
-    public Comment updateComment(Comment comment, Comment oldComment) {
-        comment.setDateCreatedComment(oldComment.getDateCreatedComment());
-        comment.setNews(oldComment.getNews());
+    public CommentDto updateComment(CommentDto commentDto, CommentDto oldCommentDto) {
+        commentDto.setDateCreatedComment(oldCommentDto.getDateCreatedComment());
+        commentDto.setIdNews(oldCommentDto.getIdNews());
 
-        return commentRepository.save(comment);
+        commentRepository.save(mapperComment.convertCommentDtoToComment(commentDto));
+
+        return commentDto;
     }
 
     @Override

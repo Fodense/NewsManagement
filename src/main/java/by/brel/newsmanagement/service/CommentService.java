@@ -1,18 +1,18 @@
 package by.brel.newsmanagement.service;
 
-import by.brel.newsmanagement.entity.Comment;
+import by.brel.newsmanagement.dto.CommentDto;
 
 import java.util.List;
 
 public interface CommentService {
 
-    List<Comment> getAllComment();
+    List<CommentDto> getAllComment();
 
-    Comment getCommentByID(long id);
+    CommentDto getCommentByID(long id);
 
-    Comment saveComment(Comment comment);
+    CommentDto saveComment(CommentDto commentDto);
 
-    Comment updateComment(Comment comment, Comment oldComment);
+    CommentDto updateComment(CommentDto commentDto, CommentDto oldCommentDto);
 
     void deleteComment(long id);
 }
