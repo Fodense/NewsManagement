@@ -19,7 +19,6 @@ public class News implements Serializable {
     private Long idNews;
 
     @Column(name = "date")
-    @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
     private Date dateCreatedNews;
 
     @Column(name = "title")

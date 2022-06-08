@@ -1,6 +1,6 @@
 package by.brel.newsmanagement.controller;
 
-import by.brel.newsmanagement.entity.Comment;
+import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,23 +15,23 @@ public class CommentRESTController {
     private CommentService commentService;
 
     @GetMapping("/comments")
-    public List<Comment> getAllComment() {
+    public List<CommentDto> getAllComment() {
         return commentService.getAllComment();
     }
 
     @GetMapping("/comments/{id}")
-    public Comment getCommentByID(@PathVariable long id) {
+    public CommentDto getCommentByID(@PathVariable long id) {
         return commentService.getCommentByID(id);
     }
 
     @PostMapping("/comments")
-    public Comment saveComment(@RequestBody Comment comment) {
-        return commentService.saveComment(comment);
+    public CommentDto saveComment(@RequestBody CommentDto commentDto) {
+        return commentService.saveComment(commentDto);
     }
 
     @PutMapping("/comments")
-    public Comment updateComment(@RequestBody Comment comment) {
-        return commentService.saveComment(comment);
+    public CommentDto updateComment(@RequestBody CommentDto commentDto) {
+        return commentService.saveComment(commentDto);
     }
 
     @DeleteMapping("/comments/{id}")
