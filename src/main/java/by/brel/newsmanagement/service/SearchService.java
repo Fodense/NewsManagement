@@ -1,10 +1,10 @@
 package by.brel.newsmanagement.service;
 
-import by.brel.newsmanagement.entity.News;
+import by.brel.newsmanagement.dto.NewsDto;
 
 import java.util.List;
 
 public interface SearchService {
 
-    List<News> searchNews(String keyWord);
+    List<NewsDto> searchNews(String keyWord);
 }

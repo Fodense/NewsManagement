@@ -1,7 +1,7 @@
 package by.brel.newsmanagement.controller;
 
-import by.brel.newsmanagement.entity.Comment;
-import by.brel.newsmanagement.entity.News;
+import by.brel.newsmanagement.dto.CommentDto;
+import by.brel.newsmanagement.dto.NewsDto;
 import by.brel.newsmanagement.service.CommentService;
 import by.brel.newsmanagement.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,61 +23,62 @@ public class NewsRESTController {
     private CommentService commentService;
 
     @GetMapping("/news")
-    public List<News> getAllNews(@PageableDefault(sort = "idNews", direction = Sort.Direction.ASC) Pageable pageable) {
+    public List<NewsDto> getAllNews(@PageableDefault(sort = "idNews", direction = Sort.Direction.ASC) Pageable pageable) {
         return newsService.getAllNewsPaginated(pageable);
     }
 
     @GetMapping("/news/{idNews}")
-    public News getNewsByID(@PathVariable long idNews) {
+    public NewsDto getNewsByID(@PathVariable long idNews) {
         return newsService.getNewsByID(idNews);
     }
 
     @GetMapping("/news/{idNews}/comments")
-    public List<Comment> getAllCommentByIDNews(@PageableDefault(sort = "idComment", direction = Sort.Direction.ASC) Pageable pageable,
-                                               @PathVariable long idNews
+    public List<CommentDto> getAllCommentByIDNews(@PageableDefault(sort = "idComment", direction = Sort.Direction.ASC) Pageable pageable,
+                                                  @PathVariable long idNews
     ) {
-        List<Comment> commentList = newsService.findAllCommentsByIdNews(idNews, pageable);
+        List<CommentDto> commentDtoList = newsService.findAllCommentsByIdNews(idNews, pageable);
 
-        return commentList;
+        return commentDtoList;
     }
 
     @GetMapping("/news/{idNews}/comments/{idComment}")
-    public Comment getCommentByID(@PathVariable long idNews, @PathVariable long idComment) {
-        Comment comment = newsService.getCommentByIDWithIDNews(idNews, idComment);
+    public CommentDto getCommentByIDWithIDNews(@PathVariable long idNews, @PathVariable long idComment) {
+        CommentDto commentDto = newsService.getCommentByIDWithIDNews(idNews, idComment);
 
-        return comment;
+        return commentDto;
     }
 
     @PostMapping("/news")
-    public News saveNews(@RequestBody News news) {
-        return newsService.saveNews(news);
+    public NewsDto saveNews(@RequestBody NewsDto newsDto) {
+        return newsService.saveNews(newsDto);
     }
 
     @PostMapping("/news/{idNews}/comments")
-    public Comment saveCommentsByIDNews(@PathVariable long idNews, @RequestBody Comment comment) {
-        News news = newsService.getNewsByID(idNews);
-        news.getCommentList().add(comment);
+    public CommentDto saveCommentsByIDNews(@PathVariable long idNews, @RequestBody CommentDto commentDto) {
+        NewsDto newsDto = newsService.getNewsByID(idNews);
 
-        newsService.saveNews(news);
+        commentDto.setIdNews(newsDto.getIdNews());
 
-        return comment;
+        commentService.saveComment(commentDto);
+
+        return commentDto;
     }
 
     @PutMapping("/news")
-    public News updateNews(@RequestBody News news) {
-        return newsService.saveNews(news);
+    public NewsDto updateNews(@RequestBody NewsDto newsDto) {
+        return newsService.saveNews(newsDto);
     }
 
     @PutMapping("/news/{idNews}/comments")
-    public Comment updateCommentByIDNews(@PathVariable long idNews, @RequestBody Comment comment) {
-        News news = newsService.getNewsByID(idNews);
+    public CommentDto updateCommentByIDNews(@PathVariable long idNews, @RequestBody CommentDto commentDto) {
+        NewsDto newsDto = newsService.getNewsByID(idNews);
 
-        Comment oldComment = news.getCommentList().stream()
-                .filter(oldComment2 -> oldComment2.getIdComment().equals(comment.getIdComment()))
+        CommentDto oldCommentDto = newsDto.getCommentList().stream()
+                .filter(oldComment2 -> oldComment2.getIdComment().equals(commentDto.getIdComment()))
                 .findFirst()
                 .orElse(null);
 
-        return commentService.updateComment(comment, oldComment);
+        return commentService.updateComment(commentDto, oldCommentDto);
     }
 
     @DeleteMapping("/news/{idNews}")
