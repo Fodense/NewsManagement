@@ -18,5 +18,5 @@ public interface NewsService {
 
     NewsDto saveNews(NewsDto newsDto);
 
-    void deleteNews(long id);
+    String deleteNews(long id);
 }
