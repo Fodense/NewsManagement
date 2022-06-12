@@ -2,6 +2,7 @@ package by.brel.newsmanagement.controller;
 
 import by.brel.newsmanagement.dto.NewsDto;
 import by.brel.newsmanagement.service.SearchService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -34,8 +35,14 @@ public class SearchRESTControllerTest {
     @MockBean
     private SearchService searchService;
 
-    NewsDto news = new NewsDto(1L, getNowDateTime(), "Test", "Test", new ArrayList<>());
-    NewsDto news2 = new NewsDto(2L, getNowDateTime(), "Test2", "Test2", new ArrayList<>());
+    private NewsDto news;
+    private NewsDto news2;
+
+    @Before
+    public void init() {
+        news = new NewsDto(1L, getNowDateTime(), "Test", "Test", new ArrayList<>());
+        news2 = new NewsDto(2L, getNowDateTime(), "Test2", "Test2", new ArrayList<>());
+    }
 
     @Test
     public void searchNews() throws Exception {

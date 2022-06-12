@@ -5,6 +5,7 @@ import by.brel.newsmanagement.dto.NewsDto;
 import by.brel.newsmanagement.service.CommentService;
 import by.brel.newsmanagement.service.NewsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -47,10 +48,18 @@ public class NewsRESTControllerTest {
     @MockBean
     private CommentService commentService;
 
-    NewsDto news = new NewsDto(1L, getNowDateTime(), "Test", "Test", new ArrayList<>());
-    NewsDto news2 = new NewsDto(2L, getNowDateTime(), "Test2", "Test2", new ArrayList<>());
-    CommentDto comment = new CommentDto(1L, getNowDateTime(), "Comment", "1", news.getIdNews());
-    CommentDto comment2 = new CommentDto(2L, getNowDateTime(), "Comment2", "2", news.getIdNews());
+    private NewsDto news;
+    private NewsDto news2;
+    private CommentDto comment;
+    private CommentDto comment2;
+
+    @Before
+    public void init() {
+        news = new NewsDto(1L, getNowDateTime(), "Test", "Test", new ArrayList<>());
+        news2 = new NewsDto(2L, getNowDateTime(), "Test2", "Test2", new ArrayList<>());
+        comment = new CommentDto(1L, getNowDateTime(), "Comment", "1", news.getIdNews());
+        comment2 = new CommentDto(2L, getNowDateTime(), "Comment2", "2", news.getIdNews());
+    }
 
     @Test
     public void getAllNews() throws Exception {
