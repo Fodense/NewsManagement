@@ -1,6 +1,8 @@
 package by.brel.newsmanagement.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +11,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "comment")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Comment implements Serializable {
 
     @Id
