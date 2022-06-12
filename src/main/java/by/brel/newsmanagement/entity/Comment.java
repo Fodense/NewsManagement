@@ -1,12 +1,10 @@
 package by.brel.newsmanagement.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comment")
@@ -19,7 +17,7 @@ public class Comment implements Serializable {
     private Long idComment;
 
     @Column(name = "date")
-    private Date dateCreatedComment;
+    private LocalDateTime dateCreatedComment;
 
     @Column(name = "text")
     private String text;

@@ -82,12 +82,16 @@ public class NewsRESTController {
     }
 
     @DeleteMapping("/news/{idNews}")
-    public void deleteNewsByID(@PathVariable long idNews) {
-        newsService.deleteNews(idNews);
+    public String deleteNewsByID(@PathVariable long idNews) {
+        String response = newsService.deleteNews(idNews);
+
+        return response;
     }
 
     @DeleteMapping("/news/{idNews}/comments/{idComment}")
-    public void deleteCommentByIDWithIDNews(@PathVariable long idNews, @PathVariable long idComment) {
-        commentService.deleteComment(idComment);
+    public String deleteCommentByIDWithIDNews(@PathVariable long idNews, @PathVariable long idComment) {
+        String response = commentService.deleteComment(idComment);
+
+        return response;
     }
 }

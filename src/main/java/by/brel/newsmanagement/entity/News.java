@@ -1,11 +1,10 @@
 package by.brel.newsmanagement.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,7 +18,7 @@ public class News implements Serializable {
     private Long idNews;
 
     @Column(name = "date")
-    private Date dateCreatedNews;
+    private LocalDateTime dateCreatedNews;
 
     @Column(name = "title")
     private String title;

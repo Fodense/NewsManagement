@@ -1,13 +1,12 @@
 package by.brel.newsmanagement.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -16,8 +15,7 @@ public class CommentDto implements Serializable {
 
     private Long idComment;
 
-    @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
-    private Date dateCreatedComment;
+    private LocalDateTime dateCreatedComment;
 
     private String text;
 
