@@ -8,7 +8,7 @@ import by.brel.newsmanagement.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +37,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto saveComment(CommentDto commentDto) {
-        commentDto.setDateCreatedComment(new Date());
+        commentDto.setDateCreatedComment(LocalDateTime.now());
 
         Comment comment = commentRepository.save(mapperComment.convertCommentDtoToComment(commentDto));
 
@@ -57,7 +57,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(long id) {
+    public String deleteComment(long id) {
         commentRepository.deleteById(id);
+
+        return "Comment with id " + id + " is deleted";
     }
 }

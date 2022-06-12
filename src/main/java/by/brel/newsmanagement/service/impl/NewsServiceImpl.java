@@ -2,7 +2,6 @@ package by.brel.newsmanagement.service.impl;
 
 import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.dto.NewsDto;
-import by.brel.newsmanagement.entity.Comment;
 import by.brel.newsmanagement.entity.News;
 import by.brel.newsmanagement.mapper.MapperComment;
 import by.brel.newsmanagement.mapper.MapperNews;
@@ -14,7 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,11 +79,11 @@ public class NewsServiceImpl implements NewsService {
             commentDtoList.stream()
                     .filter(comment -> comment.getDateCreatedComment() == null || comment.getIdNews() == null)
                     .peek(comment -> comment.setIdNews(newsDto.getIdNews()))
-                    .forEach(comment -> comment.setDateCreatedComment(new Date()));
+                    .forEach(comment -> comment.setDateCreatedComment(LocalDateTime.now()));
         }
 
         if (newsDto.getDateCreatedNews() == null) {
-            newsDto.setDateCreatedNews(new Date());
+            newsDto.setDateCreatedNews(LocalDateTime.now());
         }
 
         News news = newsRepository.save(mapperNews.convertNewsDtoToNews(newsDto));
@@ -94,7 +93,9 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public void deleteNews(long id) {
+    public String deleteNews(long id) {
         newsRepository.deleteById(id);
+
+        return "News with id " + id + " is deleted";
     }
 }
