@@ -2,6 +2,7 @@ package by.brel.newsmanagement.service.impl;
 
 import by.brel.newsmanagement.dto.NewsDto;
 import by.brel.newsmanagement.entity.News;
+import by.brel.newsmanagement.exception_handling.exception.NoSuchDataException;
 import by.brel.newsmanagement.mapper.MapperNews;
 import by.brel.newsmanagement.repository.NewsRepository;
 import by.brel.newsmanagement.service.SearchService;
@@ -22,10 +23,18 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<NewsDto> searchNews(String keyWord) {
-        List<News> news = newsRepository.findAllByTitleContainingOrTextContaining(keyWord, keyWord);
+        if (keyWord == null) {
+            throw new NoSuchDataException("Keyword cannot be empty");
+        }
 
-        return news.stream()
-                .map(news2 -> mapperNews.convertNewsToNewsDto(news2))
+        List<News> newsList = newsRepository.findAllByTitleContainingOrTextContaining(keyWord, keyWord);
+
+        if (newsList.isEmpty()) {
+            throw new NoSuchDataException("No matches were found");
+        }
+
+        return newsList.stream()
+                .map(news -> mapperNews.convertNewsToNewsDto(news))
                 .collect(Collectors.toList());
     }
 }

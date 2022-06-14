@@ -2,6 +2,7 @@ package by.brel.newsmanagement.service.impl;
 
 import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.entity.Comment;
+import by.brel.newsmanagement.exception_handling.exception.NoSuchCommentException;
 import by.brel.newsmanagement.mapper.MapperComment;
 import by.brel.newsmanagement.repository.CommentRepository;
 import by.brel.newsmanagement.service.CommentService;
@@ -23,20 +24,27 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDto> getAllComment() {
-        return commentRepository.findAll().stream()
+        List<Comment> commentList = commentRepository.findAll();
+
+        if (commentList.isEmpty()) {
+            throw new NoSuchCommentException("No comments");
+        }
+
+        return commentList.stream()
                 .map(comment -> mapperComment.convertCommentToCommentDto(comment))
                 .collect(Collectors.toList());
     }
 
     @Override
     public CommentDto getCommentByID(long id) {
-        Comment comment = commentRepository.findById(id).orElse(null);
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new NoSuchCommentException("There is no comment with ID " + id));
 
         return mapperComment.convertCommentToCommentDto(comment);
     }
 
     @Override
     public CommentDto saveComment(CommentDto commentDto) {
+        //setting date for new comment
         commentDto.setDateCreatedComment(LocalDateTime.now());
 
         Comment comment = commentRepository.save(mapperComment.convertCommentDtoToComment(commentDto));
