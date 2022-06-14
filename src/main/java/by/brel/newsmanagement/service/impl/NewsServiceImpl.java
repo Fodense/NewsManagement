@@ -3,6 +3,8 @@ package by.brel.newsmanagement.service.impl;
 import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.dto.NewsDto;
 import by.brel.newsmanagement.entity.News;
+import by.brel.newsmanagement.exception_handling.exception.NoSuchCommentException;
+import by.brel.newsmanagement.exception_handling.exception.NoSuchNewsException;
 import by.brel.newsmanagement.mapper.MapperComment;
 import by.brel.newsmanagement.mapper.MapperNews;
 import by.brel.newsmanagement.repository.CommentRepository;
@@ -36,6 +38,10 @@ public class NewsServiceImpl implements NewsService {
     public List<NewsDto> getAllNewsPaginated(Pageable pageable) {
         Page<News> newsList = newsRepository.findAll(pageable);
 
+        if (newsList.isEmpty()) {
+            throw new NoSuchNewsException("No news");
+        }
+
         return newsList.toList().stream()
                 .map(news -> mapperNews.convertNewsToNewsDto(news))
                 .collect(Collectors.toList());
@@ -43,14 +49,18 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public NewsDto getNewsByID(long id) {
-        News news = newsRepository.findById(id).orElse(null);
+        News news = newsRepository.findById(id).orElseThrow(() -> new NoSuchNewsException("There is no news with ID " + id));
 
         return mapperNews.convertNewsToNewsDto(news);
     }
 
     @Override
     public List<CommentDto> findAllCommentsByIdNews(long idNews, Pageable pageable) {
-        News news = newsRepository.findById(idNews).orElse(null);
+        News news = mapperNews.convertNewsDtoToNews(getNewsByID(idNews));
+
+        if (news.getCommentList().isEmpty()) {
+            throw new NoSuchCommentException("News with ID " + idNews + " has no comments");
+        }
 
         return commentRepository.findAllCommentsByNews(news, pageable).stream()
                 .map(comment -> mapperComment.convertCommentToCommentDto(comment))
@@ -68,6 +78,10 @@ public class NewsServiceImpl implements NewsService {
                 .findFirst()
                 .orElse(null);
 
+        if (commentDto == null) {
+            throw new NoSuchNewsException("There is no comment with ID " + idComment);
+        }
+
         return commentDto;
     }
 
@@ -75,6 +89,7 @@ public class NewsServiceImpl implements NewsService {
     public NewsDto saveNews(NewsDto newsDto) {
         List<CommentDto> commentDtoList = newsDto.getCommentList();
 
+        //add information about News to the Comment entry and setting the date
         if (!commentDtoList.isEmpty()) {
             commentDtoList.stream()
                     .filter(comment -> comment.getDateCreatedComment() == null || comment.getIdNews() == null)
@@ -82,6 +97,7 @@ public class NewsServiceImpl implements NewsService {
                     .forEach(comment -> comment.setDateCreatedComment(LocalDateTime.now()));
         }
 
+        //setting date in new news
         if (newsDto.getDateCreatedNews() == null) {
             newsDto.setDateCreatedNews(LocalDateTime.now());
         }
