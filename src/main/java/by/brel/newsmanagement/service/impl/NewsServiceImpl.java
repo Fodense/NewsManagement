@@ -77,11 +77,7 @@ public class NewsServiceImpl implements NewsService {
         CommentDto commentDto = commentDtoList.stream()
                 .filter(comment -> comment.getIdComment() == idComment)
                 .findFirst()
-                .orElse(null);
-
-        if (commentDto == null) {
-            throw new NoSuchNewsException("There is no comment with ID " + idComment);
-        }
+                .orElseThrow(() -> new NoSuchCommentException("There is no comment with ID " + idComment));
 
         return commentDto;
     }
@@ -112,6 +108,8 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public String deleteNews(long id) {
+        getNewsByID(id);
+
         newsRepository.deleteById(id);
 
         return "News with id " + id + " is deleted";

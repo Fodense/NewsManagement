@@ -66,6 +66,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public String deleteComment(long id) {
+        getCommentByID(id);
+
         commentRepository.deleteById(id);
 
         return "Comment with id " + id + " is deleted";

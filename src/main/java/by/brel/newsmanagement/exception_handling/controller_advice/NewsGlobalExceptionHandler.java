@@ -20,4 +20,13 @@ public class NewsGlobalExceptionHandler {
 
         return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<DefaultResponseData> handleException(Exception exception, HttpServletRequest request) {
+        DefaultResponseData data = new DefaultResponseData();
+        data.setUri(request.getRequestURI());
+        data.setInfo(exception.getMessage());
+
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
 }
