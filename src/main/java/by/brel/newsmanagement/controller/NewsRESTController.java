@@ -2,14 +2,18 @@ package by.brel.newsmanagement.controller;
 
 import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.dto.NewsDto;
+import by.brel.newsmanagement.exception_handling.DefaultResponseData;
 import by.brel.newsmanagement.service.CommentService;
 import by.brel.newsmanagement.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -82,16 +86,24 @@ public class NewsRESTController {
     }
 
     @DeleteMapping("/news/{idNews}")
-    public String deleteNewsByID(@PathVariable long idNews) {
+    public ResponseEntity<DefaultResponseData> deleteNewsByID(@PathVariable long idNews, HttpServletRequest request) {
         String response = newsService.deleteNews(idNews);
 
-        return response;
+        DefaultResponseData data = new DefaultResponseData();
+        data.setUri(request.getRequestURI());
+        data.setInfo(response);
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
     @DeleteMapping("/news/{idNews}/comments/{idComment}")
-    public String deleteCommentByIDWithIDNews(@PathVariable long idNews, @PathVariable long idComment) {
+    public ResponseEntity<DefaultResponseData> deleteCommentByIDWithIDNews(@PathVariable long idNews, @PathVariable long idComment, HttpServletRequest request) {
         String response = commentService.deleteComment(idComment);
 
-        return response;
+        DefaultResponseData data = new DefaultResponseData();
+        data.setUri(request.getRequestURI());
+        data.setInfo(response);
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 }

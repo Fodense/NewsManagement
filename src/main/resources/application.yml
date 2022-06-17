@@ -22,3 +22,10 @@ spring:
 
   jackson:
     time-zone: Europe/Minsk
+
+springdoc:
+  swagger-ui:
+    path: /index.html
+    url: /swagger/openapi.yaml
+    operations-sorter: method
+    default-models-expand-depth: -1

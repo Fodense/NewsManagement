@@ -7,6 +7,7 @@ import by.brel.newsmanagement.mapper.MapperComment;
 import by.brel.newsmanagement.repository.CommentRepository;
 import by.brel.newsmanagement.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,8 +24,8 @@ public class CommentServiceImpl implements CommentService {
     private MapperComment mapperComment;
 
     @Override
-    public List<CommentDto> getAllComment() {
-        List<Comment> commentList = commentRepository.findAll();
+    public List<CommentDto> getAllCommentPaginated(Pageable pageable) {
+        List<Comment> commentList = commentRepository.findAll(pageable).toList();
 
         if (commentList.isEmpty()) {
             throw new NoSuchCommentException("No comments");
@@ -66,6 +67,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public String deleteComment(long id) {
+        getCommentByID(id);
+
         commentRepository.deleteById(id);
 
         return "Comment with id " + id + " is deleted";

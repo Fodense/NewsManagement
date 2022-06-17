@@ -59,7 +59,7 @@ public class CommentRESTControllerTest {
     public void getAllComment() throws Exception {
         List<CommentDto> commentDtoList = List.of(comment, comment2);
 
-        given(commentService.getAllComment()).willReturn(commentDtoList);
+        given(commentService.getAllCommentPaginated(any())).willReturn(commentDtoList);
 
         mockMvc.perform(get("/api/v1/comments"))
                 .andExpect(status().isOk())
@@ -74,7 +74,7 @@ public class CommentRESTControllerTest {
                 .andExpect(jsonPath("$[1].text", is(comment2.getText())))
                 .andExpect(jsonPath("$[1].idUser", is(comment2.getIdUser())));
 
-        verify(commentService, times(1)).getAllComment();
+        verify(commentService, times(1)).getAllCommentPaginated(any());
         verifyNoMoreInteractions(commentService);
     }
 

@@ -2,6 +2,7 @@ package by.brel.newsmanagement.service.impl;
 
 import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.dto.NewsDto;
+import by.brel.newsmanagement.entity.Comment;
 import by.brel.newsmanagement.entity.News;
 import by.brel.newsmanagement.exception_handling.exception.NoSuchCommentException;
 import by.brel.newsmanagement.exception_handling.exception.NoSuchNewsException;
@@ -76,40 +77,39 @@ public class NewsServiceImpl implements NewsService {
         CommentDto commentDto = commentDtoList.stream()
                 .filter(comment -> comment.getIdComment() == idComment)
                 .findFirst()
-                .orElse(null);
-
-        if (commentDto == null) {
-            throw new NoSuchNewsException("There is no comment with ID " + idComment);
-        }
+                .orElseThrow(() -> new NoSuchCommentException("There is no comment with ID " + idComment));
 
         return commentDto;
     }
 
     @Override
     public NewsDto saveNews(NewsDto newsDto) {
-        List<CommentDto> commentDtoList = newsDto.getCommentList();
+        News news = mapperNews.convertNewsDtoToNews(newsDto);
+
+        List<Comment> commentList = news.getCommentList();
 
         //add information about News to the Comment entry and setting the date
-        if (!commentDtoList.isEmpty()) {
-            commentDtoList.stream()
-                    .filter(comment -> comment.getDateCreatedComment() == null || comment.getIdNews() == null)
-                    .peek(comment -> comment.setIdNews(newsDto.getIdNews()))
+        if (!commentList.isEmpty()) {
+            commentList.stream()
+                    .filter(comment -> comment.getDateCreatedComment() == null || comment.getNews() == null)
+                    .peek(comment -> comment.setNews(news))
                     .forEach(comment -> comment.setDateCreatedComment(LocalDateTime.now()));
         }
 
         //setting date in new news
-        if (newsDto.getDateCreatedNews() == null) {
-            newsDto.setDateCreatedNews(LocalDateTime.now());
+        if (news.getDateCreatedNews() == null) {
+            news.setDateCreatedNews(LocalDateTime.now());
         }
 
-        News news = newsRepository.save(mapperNews.convertNewsDtoToNews(newsDto));
-        newsDto.setIdNews(news.getIdNews());
+        News news2 = newsRepository.save(news);
 
-        return newsDto;
+        return mapperNews.convertNewsToNewsDto(news2);
     }
 
     @Override
     public String deleteNews(long id) {
+        getNewsByID(id);
+
         newsRepository.deleteById(id);
 
         return "News with id " + id + " is deleted";
