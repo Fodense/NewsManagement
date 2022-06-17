@@ -1,0 +1,561 @@
+paths:
+# News controller
+  /api/v1/news:
+    get:
+      tags:
+        - "News"
+      summary: Get all News with their Comments
+      parameters:
+        - in: query
+          name: Pageable
+          required: false
+          schema:
+            $ref: "./components.yaml#/components/schemas/Pageable_news"
+          description: For pagination
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./components.yaml#/components/schemas/News"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+    post:
+      tags:
+        - "News"
+      summary: Save News
+      requestBody:
+        required: true
+        description: "Field commentList is optional, and it can be left empty (\"commentList\": [])"
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/News_create"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/News"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+
+    put:
+      tags:
+        - "News"
+      summary: Update News
+      requestBody:
+        required: true
+        description: "Field commentList is optional, and it can be left empty (\"commentList\": [])"
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/News"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/News"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+  /api/v1/news/{idNews}:
+    get:
+      tags:
+        - "News"
+      summary: Get News by ID
+      parameters:
+        - in: path
+          name: idNews
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: News ID to return news
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/News"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+    delete:
+      tags:
+        - "News"
+      summary: Delete News by ID
+      parameters:
+        - in: path
+          name: idNews
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: News ID to delete
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/200"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+  /api/v1/news/{idNews}/comments:
+    get:
+      tags:
+        - "News"
+      summary: Get all comments on the news
+      parameters:
+        - in: query
+          name: Pageable
+          required: false
+          schema:
+            $ref: "./components.yaml#/components/schemas/Pageable_comment"
+          description: For pagination
+        - in: path
+          name: idNews
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: News ID for return comments list
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./components.yaml#/components/schemas/Comment"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+    post:
+      tags:
+        - "News"
+      summary: Add new comment in news
+      parameters:
+        - in: path
+          name: idNews
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: News ID for add new comment
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/Comment_create"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/Comment"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+    put:
+      tags:
+        - "News"
+      summary: Edit comment in news
+      parameters:
+        - in: path
+          name: idNews
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: News ID for edit comment
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/Comment"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/Comment"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+  /api/v1/news/{idNews}/comments/{idComment}:
+    get:
+      tags:
+        - "News"
+      summary: Get comment by id with help news id
+      parameters:
+        - in: path
+          name: idNews
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: News ID for return news
+
+        - in: path
+          name: idComment
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: Comment ID for return comment
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/Comment"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+    delete:
+      tags:
+        - "News"
+      summary: Delete comment by Id with help news id
+      parameters:
+        - in: path
+          name: idNews
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: News ID for return news
+
+        - in: path
+          name: idComment
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: Comment ID for return comment
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/200"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+# Comment controller
+  /api/v1/comments:
+    get:
+      tags:
+        - "Comment"
+      summary: Get all Comment
+      parameters:
+        - in: query
+          name: Pageable
+          required: false
+          schema:
+            $ref: "./components.yaml#/components/schemas/Pageable_comment"
+          description: For pagination
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./components.yaml#/components/schemas/Comment"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+    post:
+      deprecated: true
+      description: Deprecated because you can't create or edit a comment separately from a news
+      tags:
+        - "Comment"
+      summary: Save comment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/Comment_create"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/Comment"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+
+    put:
+      deprecated: true
+      description: Deprecated because you can't create or edit a comment separately from a news
+      tags:
+        - "Comment"
+      summary: Update comment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components.yaml#/components/schemas/Comment"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/Comment"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+  /api/v1/comments/{idComment}:
+    get:
+      tags:
+        - "Comment"
+      summary: Get comment by id
+      parameters:
+        - in: path
+          name: idComment
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: Comment ID to return comment
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/Comment"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+    delete:
+      tags:
+        - "Comment"
+      summary: Delete comment by id
+      parameters:
+        - in: path
+          name: idComment
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: Comment ID to delete
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/200"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"
+
+# Search controller
+  /api/v1/news/search:
+    get:
+      tags:
+        - "Search"
+      summary: Get information
+      parameters:
+        - in: query
+          name: keyword
+          required: false
+          schema:
+            type: string
+            example: Lorem
+          description: For search
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./components.yaml#/components/schemas/News"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/400"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components.yaml#/components/schemas/404"

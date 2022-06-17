@@ -1,0 +1,48 @@
+openapi: "3.0.0"
+info:
+  title: "Application API"
+  description: "News Management"
+  version: "v1"
+  contact:
+    name: "Vlad"
+    email: "vlad.brel.97@mail.ru"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0"
+
+servers:
+  - url: "http://localhost:8081"
+    description: "Service"
+
+tags:
+  - name: "News"
+    description: "News API for CRUD operations"
+  - name: "Comment"
+    description: "Comment API for CRUD operations"
+  - name: "Search"
+    description: "Search API for get information"
+
+paths:
+# News controller
+  /api/v1/news:
+    $ref: "./paths.yaml#/paths/~1api~1v1~1news"
+
+  /api/v1/news/{idNews}:
+    $ref: "./paths.yaml#/paths/~1api~1v1~1news~1{idNews}"
+
+  /api/v1/news/{idNews}/comments:
+    $ref: "./paths.yaml#/paths/~1api~1v1~1news~1{idNews}~1comments"
+
+  /api/v1/news/{idNews}/comments/{idComment}:
+    $ref: "./paths.yaml#/paths/~1api~1v1~1news~1{idNews}~1comments~1{idComment}"
+
+# Comment controller
+  /api/v1/comments:
+    $ref: "./paths.yaml#/paths/~1api~1v1~1comments"
+
+  /api/v1/comments/{idComment}:
+    $ref: "./paths.yaml#/paths/~1api~1v1~1comments~1{idComment}"
+
+# Search controller
+  /api/v1/news/search:
+    $ref: "./paths.yaml#/paths/~1api~1v1~1news~1search"
