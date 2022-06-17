@@ -24,12 +24,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -55,10 +56,10 @@ public class NewsRESTControllerTest {
 
     @Before
     public void init() {
-        news = new NewsDto(1L, getNowDateTime(), "Test", "Test", new ArrayList<>());
-        news2 = new NewsDto(2L, getNowDateTime(), "Test2", "Test2", new ArrayList<>());
-        comment = new CommentDto(1L, getNowDateTime(), "Comment", "1", news.getIdNews());
-        comment2 = new CommentDto(2L, getNowDateTime(), "Comment2", "2", news.getIdNews());
+        news = new NewsDto(1L, LocalDateTime.now(), "Test", "Test", new ArrayList<>());
+        news2 = new NewsDto(2L, LocalDateTime.now(), "Test2", "Test2", new ArrayList<>());
+        comment = new CommentDto(1L, LocalDateTime.now(), "Comment", "1", news.getIdNews());
+        comment2 = new CommentDto(2L, LocalDateTime.now(), "Comment2", "2", news.getIdNews());
     }
 
     @Test
@@ -72,18 +73,15 @@ public class NewsRESTControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].idNews", is(news.getIdNews().intValue())))
-                .andExpect(jsonPath("$[0].dateCreatedNews", is(news.getDateCreatedNews().toString())))
                 .andExpect(jsonPath("$[0].title", is(news.getTitle())))
                 .andExpect(jsonPath("$[0].text", is(news.getText())))
                 .andExpect(jsonPath("$[0].commentList", hasSize(0)))
                 .andExpect(jsonPath("$[1].idNews", is(news2.getIdNews().intValue())))
-                .andExpect(jsonPath("$[1].dateCreatedNews", is(news2.getDateCreatedNews().toString())))
                 .andExpect(jsonPath("$[1].title", is(news2.getTitle())))
                 .andExpect(jsonPath("$[1].text", is(news2.getText())))
                 .andExpect(jsonPath("$[1].commentList", hasSize(0)));
 
         verify(newsService, times(1)).getAllNewsPaginated(Mockito.any(Pageable.class));
-        verifyNoMoreInteractions(newsService);
     }
 
     @Test
@@ -94,13 +92,11 @@ public class NewsRESTControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.idNews", is(news.getIdNews().intValue())))
-                .andExpect(jsonPath("$.dateCreatedNews", is(news.getDateCreatedNews().toString())))
                 .andExpect(jsonPath("$.title", is(news.getTitle())))
                 .andExpect(jsonPath("$.text", is(news.getText())))
                 .andExpect(jsonPath("$.commentList", hasSize(0)));
 
         verify(newsService, times(1)).getNewsByID(Mockito.anyLong());
-        verifyNoMoreInteractions(newsService);
     }
 
     @Test
@@ -120,16 +116,13 @@ public class NewsRESTControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].idComment", is(comment.getIdComment().intValue())))
-                .andExpect(jsonPath("$[0].dateCreatedComment", is(comment.getDateCreatedComment().toString())))
                 .andExpect(jsonPath("$[0].text", is(comment.getText())))
                 .andExpect(jsonPath("$[0].idUser", is(comment.getIdUser())))
                 .andExpect(jsonPath("$[1].idComment", is(comment2.getIdComment().intValue())))
-                .andExpect(jsonPath("$[1].dateCreatedComment", is(comment2.getDateCreatedComment().toString())))
                 .andExpect(jsonPath("$[1].text", is(comment2.getText())))
                 .andExpect(jsonPath("$[1].idUser", is(comment2.getIdUser())));
 
         verify(newsService, times(1)).findAllCommentsByIdNews(Mockito.anyLong(), Mockito.any(Pageable.class));
-        verifyNoMoreInteractions(newsService);
     }
 
     @Test
@@ -147,12 +140,10 @@ public class NewsRESTControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.idComment", is(comment.getIdComment().intValue())))
-                .andExpect(jsonPath("$.dateCreatedComment", is(comment.getDateCreatedComment().toString())))
                 .andExpect(jsonPath("$.text", is(comment.getText())))
                 .andExpect(jsonPath("$.idUser", is(comment.getIdUser())));
 
         verify(newsService, times(1)).getCommentByIDWithIDNews(Mockito.anyLong(), Mockito.anyLong());
-        verifyNoMoreInteractions(newsService);
     }
 
     @Test
@@ -168,13 +159,11 @@ public class NewsRESTControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.idNews", is(news.getIdNews().intValue())))
-                .andExpect(jsonPath("$.dateCreatedNews", is(news.getDateCreatedNews().toString())))
                 .andExpect(jsonPath("$.title", is(news.getTitle())))
                 .andExpect(jsonPath("$.text", is(news.getText())))
                 .andExpect(jsonPath("$.commentList", hasSize(0)));
 
         verify(newsService, times(1)).saveNews(Mockito.any(NewsDto.class));
-        verifyNoMoreInteractions(newsService);
     }
 
     @Test
@@ -193,14 +182,11 @@ public class NewsRESTControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.idComment", is(comment.getIdComment().intValue())))
-                .andExpect(jsonPath("$.dateCreatedComment", is(comment.getDateCreatedComment().toString())))
                 .andExpect(jsonPath("$.text", is(comment.getText())))
                 .andExpect(jsonPath("$.idUser", is(comment.getIdUser())));
 
         verify(newsService, times(1)).getNewsByID(Mockito.anyLong());
         verify(commentService, times(1)).saveComment(Mockito.any(CommentDto.class));
-        verifyNoMoreInteractions(newsService);
-        verifyNoMoreInteractions(commentService);
     }
 
     @Test
@@ -216,13 +202,11 @@ public class NewsRESTControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.idNews", is(news.getIdNews().intValue())))
-                .andExpect(jsonPath("$.dateCreatedNews", is(news.getDateCreatedNews().toString())))
                 .andExpect(jsonPath("$.title", is(news.getTitle())))
                 .andExpect(jsonPath("$.text", is(news.getText())))
                 .andExpect(jsonPath("$.commentList", hasSize(0)));
 
         verify(newsService, times(1)).saveNews(Mockito.any(NewsDto.class));
-        verifyNoMoreInteractions(newsService);
     }
 
     @Test
@@ -241,36 +225,30 @@ public class NewsRESTControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.idComment", is(comment.getIdComment().intValue())))
-                .andExpect(jsonPath("$.dateCreatedComment", is(comment.getDateCreatedComment().toString())))
                 .andExpect(jsonPath("$.text", is(comment.getText())))
                 .andExpect(jsonPath("$.idUser", is(comment.getIdUser())));
 
         verify(newsService, times(1)).getNewsByID(Mockito.anyLong());
         verify(commentService, times(1)).updateComment(Mockito.any(CommentDto.class), Mockito.any(CommentDto.class));
-        verifyNoMoreInteractions(newsService);
-        verifyNoMoreInteractions(commentService);
     }
 
     @Test
     public void deleteNewsByID() throws Exception {
         when(newsService.deleteNews(Mockito.anyLong())).thenReturn("News is deleted");
 
-        MvcResult requestResult = mockMvc.perform(delete("/api/v1/news/{id}", news.getIdNews()))
+        mockMvc.perform(delete("/api/v1/news/{id}", 1))
                 .andExpect(status().isOk())
-                .andReturn();
-
-        String result = requestResult.getResponse().getContentAsString();
-        assertEquals(result, "News is deleted");
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/1"))))
+                .andExpect(jsonPath("$.info", is(containsString("delete"))));
 
         verify(newsService, times(1)).deleteNews(Mockito.anyLong());
-        verifyNoMoreInteractions(newsService);
     }
 
     @Test
     public void deleteCommentByIDWithIDNews() throws Exception {
         when(commentService.deleteComment(Mockito.anyLong())).thenReturn("Comment is deleted");
 
-        MvcResult requestResult = mockMvc.perform(delete("/api/v1/news/{idNews}/comments/{idComment}", news.getIdNews(), comment.getIdComment()))
+        MvcResult requestResult = mockMvc.perform(delete("/api/v1/news/{idNews}/comments/{idComment}", 20, 200))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -278,14 +256,5 @@ public class NewsRESTControllerTest {
         assertEquals(result, "Comment is deleted");
 
         verify(commentService, times(1)).deleteComment(Mockito.anyLong());
-        verifyNoMoreInteractions(commentService);
-    }
-
-    public LocalDateTime getNowDateTime() {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime localDateTime = LocalDateTime.now();
-        String dateTime = localDateTime.format(dateFormatter);
-
-        return LocalDateTime.parse(dateTime, dateFormatter);
     }
 }
