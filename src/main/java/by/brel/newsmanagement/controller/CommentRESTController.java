@@ -4,6 +4,9 @@ import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.exception_handling.DefaultResponseData;
 import by.brel.newsmanagement.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +22,8 @@ public class CommentRESTController {
     private CommentService commentService;
 
     @GetMapping("/comments")
-    public List<CommentDto> getAllComment() {
-        return commentService.getAllComment();
+    public List<CommentDto> getAllComment(@PageableDefault(sort = "idComment", direction = Sort.Direction.ASC) Pageable pageable) {
+        return commentService.getAllCommentPaginated(pageable);
     }
 
     @GetMapping("/comments/{id}")
