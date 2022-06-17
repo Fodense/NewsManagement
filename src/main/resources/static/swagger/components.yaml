@@ -1,0 +1,28 @@
+components:
+  schemas:
+    News:
+      $ref: "./schemas.yaml#/components/schemas/News"
+
+    Comment:
+      $ref: "./schemas.yaml#/components/schemas/Comment"
+
+    News_create:
+      $ref: "./schemas.yaml#/components/schemas/News_create"
+
+    Comment_create:
+      $ref: "./schemas.yaml#/components/schemas/Comment_create"
+
+    Pageable_news:
+      $ref: "./schemas.yaml#/components/schemas/Pageable_news"
+
+    Pageable_comment:
+      $ref: "./schemas.yaml#/components/schemas/Pageable_comment"
+
+    200:
+      $ref: "./schemas.yaml#/components/schemas/200"
+
+    400:
+      $ref: "./schemas.yaml#/components/schemas/400"
+
+    404:
+      $ref: "./schemas.yaml#/components/schemas/404"

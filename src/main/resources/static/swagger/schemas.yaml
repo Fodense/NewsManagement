@@ -1,0 +1,133 @@
+components:
+  schemas:
+    News:
+      type: object
+      properties:
+        idNews:
+          type: integer
+          format: int64
+          example: 1
+        dateCreatedNews:
+          type: string
+          format: data-time
+          example: "2022-06-15T17:18:40.115478"
+        title:
+          type: string
+          example: Example title
+        text:
+          type: string
+          example: Example text
+        commentList:
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+
+    Comment:
+      type: object
+      properties:
+        idComment:
+          type: integer
+          format: int64
+          example: 1
+        dateCreatedComment:
+          type: string
+          format: data-time
+          example: "2022-06-15T17:18:40.115478"
+        text:
+          type: string
+          example: Example text
+        idUser:
+          type: string
+          example: 1
+
+    News_create:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Example title
+        text:
+          type: string
+          example: Example text
+        commentList:
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment_create"
+
+    Comment_create:
+      type: object
+      properties:
+        text:
+          type: string
+          example: Example text
+        idUser:
+          type: string
+          example: 1
+
+    Pageable_news:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          example: 0
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          example: 10
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+            example: idNews
+
+    Pageable_comment:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          example: 0
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          example: 10
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+            example: idComment
+
+    200:
+      type: object
+      properties:
+        uri:
+          type: string
+          example: /api/v1/droids
+        info:
+          type: string
+          example: Droids with id XX is deleted;
+
+    400:
+      type: object
+      properties:
+        uri:
+          type: string
+          example: /api/v1/droids
+        info:
+          type: string
+          example: Could not execute statement;
+
+    404:
+      type: object
+      properties:
+        uri:
+          type: string
+          example: /api/v1/droids/1
+        info:
+          type: string
+          example: There is no droid with ID 1
