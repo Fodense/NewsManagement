@@ -2,7 +2,9 @@ package by.brel.newsmanagement.controller;
 
 import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.dto.NewsDto;
+import by.brel.newsmanagement.entity.News;
 import by.brel.newsmanagement.exception_handling.DefaultResponseData;
+import by.brel.newsmanagement.exception_handling.exception.NoSuchCommentException;
 import by.brel.newsmanagement.service.CommentService;
 import by.brel.newsmanagement.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +100,14 @@ public class NewsRESTController {
 
     @DeleteMapping("/news/{idNews}/comments/{idComment}")
     public ResponseEntity<DefaultResponseData> deleteCommentByIDWithIDNews(@PathVariable long idNews, @PathVariable long idComment, HttpServletRequest request) {
+        NewsDto newsDto = getNewsByID(idNews);
+
+        // check for comments on this post
+        newsDto.getCommentList().stream()
+                .filter(commentDto -> commentDto.getIdComment() == idComment)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchCommentException("There is no comment with ID " + idComment + " in this news"));
+
         String response = commentService.deleteComment(idComment);
 
         DefaultResponseData data = new DefaultResponseData();
