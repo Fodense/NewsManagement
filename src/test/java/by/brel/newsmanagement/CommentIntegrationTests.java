@@ -46,13 +46,11 @@ class CommentIntegrationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].idComment", is(1)))
-                .andExpect(jsonPath("$[0].dateCreatedComment", is(containsString(anyString()))))
-                .andExpect(jsonPath("$[0].text", is(containsString(anyString()))))
-                .andExpect(jsonPath("$[0].idUser", is(containsString(anyString()))))
+                .andExpect(jsonPath("$[0].text", is(containsString("Lorem"))))
+                .andExpect(jsonPath("$[0].idUser", is(containsString("1"))))
                 .andExpect(jsonPath("$[1].idComment", is(2)))
-                .andExpect(jsonPath("$[1].dateCreatedComment", is(containsString(anyString()))))
-                .andExpect(jsonPath("$[1].text", is(containsString(anyString()))))
-                .andExpect(jsonPath("$[1].idUser", is(containsString(anyString()))));
+                .andExpect(jsonPath("$[1].text", is(containsString("Aenean"))))
+                .andExpect(jsonPath("$[1].idUser", is(containsString("1"))));
     }
 
     @Test
@@ -61,9 +59,8 @@ class CommentIntegrationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.idComment", is(1)))
-                .andExpect(jsonPath("$.dateCreatedComment", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.text", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.idUser", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.text", is(containsString("Lorem"))))
+                .andExpect(jsonPath("$.idUser", is(containsString("1"))));
     }
 
     @Test
@@ -71,8 +68,8 @@ class CommentIntegrationTests {
         mockMvc.perform(get("/api/v1/comments/{idComment}", 300))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/comments/300"))))
+                .andExpect(jsonPath("$.info", is(containsString("There is no comment with ID 300"))));
     }
 
     @Test
@@ -87,8 +84,8 @@ class CommentIntegrationTests {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/comments"))))
+                .andExpect(jsonPath("$.info", is(containsString("JSON parse error"))));
     }
 
     @Test
@@ -103,8 +100,8 @@ class CommentIntegrationTests {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/comments"))))
+                .andExpect(jsonPath("$.info", is(containsString("JSON parse error"))));
     }
 
     @Test
@@ -112,8 +109,8 @@ class CommentIntegrationTests {
         mockMvc.perform(delete("/api/v1/comments/{idComment}", 200))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/comments/200"))))
+                .andExpect(jsonPath("$.info", is(containsString("Comment with id 200 is deleted"))));
     }
 
     @Test
@@ -121,7 +118,7 @@ class CommentIntegrationTests {
         mockMvc.perform(delete("/api/v1/comments/{idComment}", 201))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/comments/201"))))
+                .andExpect(jsonPath("$.info", is(containsString("There is no comment with ID 201"))));
     }
 }

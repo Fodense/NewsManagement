@@ -45,14 +45,12 @@ class NewsIntegrationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].idNews", is(1)))
-                .andExpect(jsonPath("$[0].dateCreatedNews", is(containsString("2022"))))
-                .andExpect(jsonPath("$[0].title", is(containsString(anyString()))))
-                .andExpect(jsonPath("$[0].text", is(containsString(anyString()))))
+                .andExpect(jsonPath("$[0].title", is(containsString("Lorem"))))
+                .andExpect(jsonPath("$[0].text", is(containsString("Lorem"))))
                 .andExpect(jsonPath("$[0].commentList", hasSize(10)))
                 .andExpect(jsonPath("$[1].idNews", is(2)))
-                .andExpect(jsonPath("$[1].dateCreatedNews", is(containsString("2022"))))
-                .andExpect(jsonPath("$[1].title", is(containsString(anyString()))))
-                .andExpect(jsonPath("$[1].text", is(containsString(anyString()))))
+                .andExpect(jsonPath("$[1].title", is(containsString("Donec"))))
+                .andExpect(jsonPath("$[1].text", is(containsString("ultricies"))))
                 .andExpect(jsonPath("$[1].commentList", hasSize(10)))
                 .andExpect(jsonPath("$[9].idNews", is(10)));
     }
@@ -63,9 +61,8 @@ class NewsIntegrationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.idNews", is(1)))
-                .andExpect(jsonPath("$.dateCreatedNews", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.title", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.text", is(containsString(anyString()))))
+                .andExpect(jsonPath("$.title", is(containsString("Lorem"))))
+                .andExpect(jsonPath("$.text", is(containsString("Lorem"))))
                 .andExpect(jsonPath("$.commentList", hasSize(10)));
     }
 
@@ -74,8 +71,8 @@ class NewsIntegrationTests {
         mockMvc.perform(get("/api/v1/news/{idNews}", 22))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/22"))))
+                .andExpect(jsonPath("$.info", is(containsString("There is no news with ID 22"))));
     }
 
     @Test
@@ -85,9 +82,8 @@ class NewsIntegrationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(10)))
                 .andExpect(jsonPath("$[0].idComment", is(1)))
-                .andExpect(jsonPath("$[0].dateCreatedComment", is(containsString(anyString()))))
-                .andExpect(jsonPath("$[0].text", is(containsString(anyString()))))
-                .andExpect(jsonPath("$[0].idUser", is(containsString(anyString()))));
+                .andExpect(jsonPath("$[0].text", is(containsString("Comment"))))
+                .andExpect(jsonPath("$[0].idUser", is(containsString("1"))));
     }
 
     @Test
@@ -95,8 +91,8 @@ class NewsIntegrationTests {
         mockMvc.perform(get("/api/v1/news/{idNews}/comments", 23))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/23/comments"))))
+                .andExpect(jsonPath("$.info", is(containsString("There is no news with ID 23"))));
     }
 
     @Test
@@ -105,9 +101,8 @@ class NewsIntegrationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.idComment", is(1)))
-                .andExpect(jsonPath("$.dateCreatedComment", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.text", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.idUser", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.text", is(containsString("Lorem"))))
+                .andExpect(jsonPath("$.idUser", is(containsString("1"))));
     }
 
     @Test
@@ -115,8 +110,8 @@ class NewsIntegrationTests {
         mockMvc.perform(get("/api/v1/news/{idNews}/comments/{idComment}", 1, 100))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/1/comments/100"))))
+                .andExpect(jsonPath("$.info", is(containsString("There is no comment with ID 100"))));
     }
 
     @Test
@@ -147,8 +142,8 @@ class NewsIntegrationTests {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news"))))
+                .andExpect(jsonPath("$.info", is(containsString("JSON parse error"))));
     }
 
     @Test
@@ -164,9 +159,8 @@ class NewsIntegrationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.idComment", is(201)))
-                .andExpect(jsonPath("$.dateCreatedComment", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.text", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.idUser", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.text", is(containsString("Comment"))))
+                .andExpect(jsonPath("$.idUser", is(containsString("1"))));
     }
 
     @Test
@@ -181,8 +175,8 @@ class NewsIntegrationTests {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/1/comments"))))
+                .andExpect(jsonPath("$.info", is(containsString("JSON parse error"))));
     }
 
     @Test
@@ -197,8 +191,8 @@ class NewsIntegrationTests {
                 )
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/25/comments"))))
+                .andExpect(jsonPath("$.info", is(containsString("There is no news with ID 25"))));
     }
 
     @Test
@@ -229,8 +223,8 @@ class NewsIntegrationTests {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news"))))
+                .andExpect(jsonPath("$.info", is(containsString("JSON parse error"))));
     }
 
     @Test
@@ -246,9 +240,8 @@ class NewsIntegrationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.idComment", is(1)))
-                .andExpect(jsonPath("$.dateCreatedComment", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.text", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.idUser", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.text", is(containsString("Comment"))))
+                .andExpect(jsonPath("$.idUser", is(containsString("1"))));
     }
 
     @Test
@@ -263,8 +256,8 @@ class NewsIntegrationTests {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/1/comments"))))
+                .andExpect(jsonPath("$.info", is(containsString("JSON parse error"))));
     }
 
     @Test
@@ -279,8 +272,8 @@ class NewsIntegrationTests {
                 )
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/26/comments"))))
+                .andExpect(jsonPath("$.info", is(containsString("There is no news with ID 26"))));
     }
 
     @Test
@@ -288,8 +281,8 @@ class NewsIntegrationTests {
         mockMvc.perform(delete("/api/v1/news/{idNews}", 21))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/21"))))
+                .andExpect(jsonPath("$.info", is(containsString("News with id 21 is deleted"))));
     }
 
     @Test
@@ -297,8 +290,8 @@ class NewsIntegrationTests {
         mockMvc.perform(delete("/api/v1/news/{idNews}", 21))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/21"))))
+                .andExpect(jsonPath("$.info", is(containsString("There is no news with ID 21"))));
     }
 
     @Test
@@ -306,8 +299,8 @@ class NewsIntegrationTests {
         mockMvc.perform(delete("/api/v1/news/{idNews}/comments/{idComment}", 1, 2))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/1/comments/2"))))
+                .andExpect(jsonPath("$.info", is(containsString("Comment with id 2 is deleted"))));
     }
 
     @Test
@@ -315,7 +308,7 @@ class NewsIntegrationTests {
         mockMvc.perform(delete("/api/v1/news/{idNews}/comments/{idComment}", 1, 22))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/1/comments/22"))))
+                .andExpect(jsonPath("$.info", is(containsString("There is no comment with ID 22 in this news"))));
     }
 }

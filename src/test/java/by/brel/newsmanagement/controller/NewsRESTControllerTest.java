@@ -2,6 +2,9 @@ package by.brel.newsmanagement.controller;
 
 import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.dto.NewsDto;
+import by.brel.newsmanagement.exception_handling.DefaultResponseData;
+import by.brel.newsmanagement.exception_handling.exception.NoSuchCommentException;
+import by.brel.newsmanagement.exception_handling.exception.NoSuchNewsException;
 import by.brel.newsmanagement.service.CommentService;
 import by.brel.newsmanagement.service.NewsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +17,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -63,20 +68,21 @@ public class NewsRESTControllerTest {
     }
 
     @Test
-    public void getAllNews() throws Exception {
+    public void getAllNews_success() throws Exception {
         List<NewsDto> newsDtoList = List.of(news, news2);
 
         given(newsService.getAllNewsPaginated(Mockito.any(PageRequest.class))).willReturn(newsDtoList);
 
         mockMvc.perform(get("/api/v1/news"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].idNews", is(news.getIdNews().intValue())))
+                .andExpect(jsonPath("$[0].idNews", is(1)))
                 .andExpect(jsonPath("$[0].title", is(news.getTitle())))
                 .andExpect(jsonPath("$[0].text", is(news.getText())))
                 .andExpect(jsonPath("$[0].commentList", hasSize(0)))
-                .andExpect(jsonPath("$[1].idNews", is(news2.getIdNews().intValue())))
+                .andExpect(jsonPath("$[1].idNews", is(2)))
                 .andExpect(jsonPath("$[1].title", is(news2.getTitle())))
                 .andExpect(jsonPath("$[1].text", is(news2.getText())))
                 .andExpect(jsonPath("$[1].commentList", hasSize(0)));
@@ -85,13 +91,14 @@ public class NewsRESTControllerTest {
     }
 
     @Test
-    public void getNewsByID() throws Exception {
+    public void getNewsByID_success() throws Exception {
         given(newsService.getNewsByID(Mockito.anyLong())).willReturn(news);
 
-        mockMvc.perform(get("/api/v1/news/{id}", news.getIdNews()))
+        mockMvc.perform(get("/api/v1/news/{id}", 1))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.idNews", is(news.getIdNews().intValue())))
+                .andExpect(jsonPath("$.idNews", is(1)))
                 .andExpect(jsonPath("$.title", is(news.getTitle())))
                 .andExpect(jsonPath("$.text", is(news.getText())))
                 .andExpect(jsonPath("$.commentList", hasSize(0)));
@@ -100,25 +107,37 @@ public class NewsRESTControllerTest {
     }
 
     @Test
-    public void getAllCommentByIDNews() throws Exception {
+    public void getNewsByID_notFound() throws Exception {
+        given(newsService.getNewsByID(Mockito.anyLong())).willThrow(new NoSuchNewsException("There is no news"));
+
+        mockMvc.perform(get("/api/v1/news/{id}", 4))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        verify(newsService, times(1)).getNewsByID(Mockito.anyLong());
+    }
+
+    @Test
+    public void getAllCommentByIDNews_success() throws Exception {
         news.getCommentList().add(comment);
         news.getCommentList().add(comment2);
 
         given(newsService.findAllCommentsByIdNews(Mockito.anyLong(), Mockito.any(Pageable.class))).willReturn(news.getCommentList());
 
-        mockMvc.perform(get("/api/v1/news/{idNews}/comments", news.getIdNews())
+        mockMvc.perform(get("/api/v1/news/{idNews}/comments", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("utf-8")
                         .content(objectMapper.writeValueAsString(comment))
                         .accept(MediaType.APPLICATION_JSON)
                 )
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].idComment", is(comment.getIdComment().intValue())))
+                .andExpect(jsonPath("$[0].idComment", is(1)))
                 .andExpect(jsonPath("$[0].text", is(comment.getText())))
                 .andExpect(jsonPath("$[0].idUser", is(comment.getIdUser())))
-                .andExpect(jsonPath("$[1].idComment", is(comment2.getIdComment().intValue())))
+                .andExpect(jsonPath("$[1].idComment", is(2)))
                 .andExpect(jsonPath("$[1].text", is(comment2.getText())))
                 .andExpect(jsonPath("$[1].idUser", is(comment2.getIdUser())));
 
@@ -126,20 +145,35 @@ public class NewsRESTControllerTest {
     }
 
     @Test
-    public void getCommentByIDWithIDNews() throws Exception {
+    public void getAllCommentByIDNews_notFound() throws Exception {
+        news.getCommentList().add(comment);
+        news.getCommentList().add(comment2);
+
+        given(newsService.findAllCommentsByIdNews(Mockito.anyLong(), Mockito.any(Pageable.class))).willThrow(new NoSuchCommentException("News has no comments"));
+
+        mockMvc.perform(get("/api/v1/news/{idNews}/comments", 1))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        verify(newsService, times(1)).findAllCommentsByIdNews(Mockito.anyLong(), Mockito.any(Pageable.class));
+    }
+
+    @Test
+    public void getCommentByIDWithIDNews_success() throws Exception {
         news.getCommentList().add(comment);
 
         given(newsService.getCommentByIDWithIDNews(Mockito.anyLong(), Mockito.anyLong())).willReturn(comment);
 
-        mockMvc.perform(get("/api/v1/news/{idNews}/comments/{idComment}", news.getIdNews(), comment.getIdComment())
+        mockMvc.perform(get("/api/v1/news/{idNews}/comments/{idComment}", 1, 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("utf-8")
                         .content(objectMapper.writeValueAsString(comment))
                         .accept(MediaType.APPLICATION_JSON)
                 )
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.idComment", is(comment.getIdComment().intValue())))
+                .andExpect(jsonPath("$.idComment", is(1)))
                 .andExpect(jsonPath("$.text", is(comment.getText())))
                 .andExpect(jsonPath("$.idUser", is(comment.getIdUser())));
 
@@ -147,7 +181,19 @@ public class NewsRESTControllerTest {
     }
 
     @Test
-    public void saveNews() throws Exception {
+    public void getCommentByIDWithIDNews_notFound() throws Exception {
+        news.getCommentList().add(comment);
+
+        given(newsService.getCommentByIDWithIDNews(Mockito.anyLong(), Mockito.anyLong())).willThrow(new NoSuchCommentException("No comments"));
+
+        mockMvc.perform(get("/api/v1/news/{idNews}/comments/{idComment}", 1, 4))
+                .andExpect(status().isNotFound());
+
+        verify(newsService, times(1)).getCommentByIDWithIDNews(Mockito.anyLong(), Mockito.anyLong());
+    }
+
+    @Test
+    public void saveNews_success() throws Exception {
         given(newsService.saveNews(Mockito.any(NewsDto.class))).willReturn(news);
 
         mockMvc.perform(post("/api/v1/news")
@@ -158,7 +204,7 @@ public class NewsRESTControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.idNews", is(news.getIdNews().intValue())))
+                .andExpect(jsonPath("$.idNews", is(1)))
                 .andExpect(jsonPath("$.title", is(news.getTitle())))
                 .andExpect(jsonPath("$.text", is(news.getText())))
                 .andExpect(jsonPath("$.commentList", hasSize(0)));
@@ -167,21 +213,22 @@ public class NewsRESTControllerTest {
     }
 
     @Test
-    public void saveCommentsByIDNews() throws Exception {
+    public void saveCommentsByIDNews_success() throws Exception {
         news.getCommentList().add(comment);
 
         given(newsService.getNewsByID(Mockito.anyLong())).willReturn(news);
         given(commentService.saveComment(Mockito.any(CommentDto.class))).willReturn(comment);
 
-        mockMvc.perform(post("/api/v1/news/{idNews}/comments", news.getIdNews())
+        mockMvc.perform(post("/api/v1/news/{idNews}/comments", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("utf-8")
                         .content(objectMapper.writeValueAsString(comment))
                         .accept(MediaType.APPLICATION_JSON)
                 )
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.idComment", is(comment.getIdComment().intValue())))
+                .andExpect(jsonPath("$.idComment", is(1)))
                 .andExpect(jsonPath("$.text", is(comment.getText())))
                 .andExpect(jsonPath("$.idUser", is(comment.getIdUser())));
 
@@ -190,7 +237,7 @@ public class NewsRESTControllerTest {
     }
 
     @Test
-    public void updateNews() throws Exception {
+    public void updateNews_success() throws Exception {
         given(newsService.saveNews(Mockito.any(NewsDto.class))).willReturn(news);
 
         mockMvc.perform(put("/api/v1/news")
@@ -199,9 +246,10 @@ public class NewsRESTControllerTest {
                         .content(objectMapper.writeValueAsString(news))
                         .accept(MediaType.APPLICATION_JSON)
                 )
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.idNews", is(news.getIdNews().intValue())))
+                .andExpect(jsonPath("$.idNews", is(1)))
                 .andExpect(jsonPath("$.title", is(news.getTitle())))
                 .andExpect(jsonPath("$.text", is(news.getText())))
                 .andExpect(jsonPath("$.commentList", hasSize(0)));
@@ -210,13 +258,13 @@ public class NewsRESTControllerTest {
     }
 
     @Test
-    public void updateCommentByIDNews() throws Exception {
+    public void updateCommentByIDNews_success() throws Exception {
         news.getCommentList().add(comment);
 
         given(newsService.getNewsByID(Mockito.anyLong())).willReturn(news);
         given(commentService.updateComment(Mockito.any(CommentDto.class), Mockito.any(CommentDto.class))).willReturn(comment);
 
-        mockMvc.perform(put("/api/v1/news/{idNews}/comments", news.getIdNews())
+        mockMvc.perform(put("/api/v1/news/{idNews}/comments", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("utf-8")
                         .content(objectMapper.writeValueAsString(comment))
@@ -224,7 +272,7 @@ public class NewsRESTControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.idComment", is(comment.getIdComment().intValue())))
+                .andExpect(jsonPath("$.idComment", is(1)))
                 .andExpect(jsonPath("$.text", is(comment.getText())))
                 .andExpect(jsonPath("$.idUser", is(comment.getIdUser())));
 
@@ -233,28 +281,56 @@ public class NewsRESTControllerTest {
     }
 
     @Test
-    public void deleteNewsByID() throws Exception {
+    public void deleteNewsByID_success() throws Exception {
         when(newsService.deleteNews(Mockito.anyLong())).thenReturn("News is deleted");
 
-        mockMvc.perform(delete("/api/v1/news/{id}", 1))
+        mockMvc.perform(delete("/api/v1/news/{id}", 2))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/1"))))
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/2"))))
                 .andExpect(jsonPath("$.info", is(containsString("delete"))));
 
         verify(newsService, times(1)).deleteNews(Mockito.anyLong());
     }
 
     @Test
-    public void deleteCommentByIDWithIDNews() throws Exception {
-        when(commentService.deleteComment(Mockito.anyLong())).thenReturn("Comment is deleted");
+    public void deleteNewsByID_notFound() throws Exception {
+        when(newsService.deleteNews(Mockito.anyLong())).thenThrow(new NoSuchNewsException("No news"));
 
-        MvcResult requestResult = mockMvc.perform(delete("/api/v1/news/{idNews}/comments/{idComment}", 20, 200))
+        mockMvc.perform(delete("/api/v1/news/{id}", 3))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.uri", is("/api/v1/news/3")))
+                .andExpect(jsonPath("$.info", is("No news")));
+
+        verify(newsService, times(1)).deleteNews(Mockito.anyLong());
+    }
+
+    @Test
+    public void deleteCommentByIDWithIDNews_success() throws Exception {
+        CommentDto comment3 = new CommentDto(3L, LocalDateTime.now(), "Comment3", "3", 1L);
+        news.getCommentList().add(comment3);
+
+        when(newsService.getNewsByID(Mockito.anyLong())).thenReturn(news);
+        when(commentService.deleteComment(Mockito.anyLong())).thenReturn("deleted");
+
+        mockMvc.perform(delete("/api/v1/news/{idNews}/comments/{idComment}", 1, 3))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andReturn();
-
-        String result = requestResult.getResponse().getContentAsString();
-        assertEquals(result, "Comment is deleted");
+                .andExpect(jsonPath("$.uri", is("/api/v1/news/1/comments/3")))
+                .andExpect(jsonPath("$.info", is(containsString("deleted"))));
 
         verify(commentService, times(1)).deleteComment(Mockito.anyLong());
+    }
+
+    @Test
+    public void deleteCommentByIDWithIDNews_notFound() throws Exception {
+        when(newsService.getNewsByID(Mockito.anyLong())).thenReturn(news);
+        when(commentService.deleteComment(Mockito.anyLong())).thenThrow(new NoSuchCommentException("There is no comment with ID 3 in this news"));
+
+        mockMvc.perform(delete("/api/v1/news/{idNews}/comments/{idComment}", 1, 3))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.uri", is("/api/v1/news/1/comments/3")))
+                .andExpect(jsonPath("$.info", is(containsString("There is no comment with ID 3 in this news"))));
     }
 }

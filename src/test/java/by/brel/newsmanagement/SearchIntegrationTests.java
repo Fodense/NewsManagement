@@ -47,9 +47,8 @@ class SearchIntegrationTests {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].idNews", is(1)))
-                .andExpect(jsonPath("$[0].dateCreatedNews", is(containsString(anyString()))))
-                .andExpect(jsonPath("$[0].title", is(containsString(anyString()))))
-                .andExpect(jsonPath("$[0].text", is(containsString(anyString()))));
+                .andExpect(jsonPath("$[0].title", is(containsString("Lorem ipsum"))))
+                .andExpect(jsonPath("$[0].text", is(containsString("Lorem"))));
     }
 
     @Test
@@ -59,7 +58,7 @@ class SearchIntegrationTests {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.uri", is(containsString(anyString()))))
-                .andExpect(jsonPath("$.info", is(containsString(anyString()))));
+                .andExpect(jsonPath("$.uri", is(containsString("/api/v1/news/search"))))
+                .andExpect(jsonPath("$.info", is(containsString("No matches were found"))));
     }
 }
