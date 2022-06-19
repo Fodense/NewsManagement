@@ -2,7 +2,6 @@ package by.brel.newsmanagement.controller;
 
 import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.dto.NewsDto;
-import by.brel.newsmanagement.entity.News;
 import by.brel.newsmanagement.exception_handling.DefaultResponseData;
 import by.brel.newsmanagement.exception_handling.exception.NoSuchCommentException;
 import by.brel.newsmanagement.service.CommentService;
