@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MapperNews {
+public class NewsMapper {
 
     @Autowired
     private ModelMapper modelMapper;
