@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * Comment DTO class; With fields: idComment, dateCreatedComment, text, idUser, idNews
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

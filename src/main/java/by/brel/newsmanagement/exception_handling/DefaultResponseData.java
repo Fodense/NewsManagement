@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Class DefaultResponseData; With fields uri and info
+ * Use it for response on DELETE request and Exception Handling
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
