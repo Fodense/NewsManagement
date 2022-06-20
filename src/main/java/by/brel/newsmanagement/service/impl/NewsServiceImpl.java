@@ -35,6 +35,16 @@ public class NewsServiceImpl implements NewsService {
     @Autowired
     private CommentMapper commentMapper;
 
+    /**
+     * Method return all News with it Comments from DB or throw Exception
+     * and convert news to newsDto
+     *
+     * @param pageable object for pagination, if parameters were specified in url
+     * @see News
+     * @see NewsDto
+     * @throws NoSuchNewsException if news not found in DB
+     * @return List with newsDto json
+     */
     @Override
     public List<NewsDto> getAllNewsPaginated(Pageable pageable) {
         Page<News> newsList = newsRepository.findAll(pageable);
@@ -48,6 +58,16 @@ public class NewsServiceImpl implements NewsService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method returns newsDto
+     * and convert news to newsDto
+     *
+     * @param id parameter for search news with id
+     * @see News
+     * @see NewsDto
+     * @throws NoSuchNewsException if news not found in DB
+     * @return newsDto json
+     */
     @Override
     public NewsDto getNewsByID(long id) {
         News news = newsRepository.findById(id).orElseThrow(() -> new NoSuchNewsException("There is no news with ID " + id));
@@ -55,6 +75,19 @@ public class NewsServiceImpl implements NewsService {
         return newsMapper.convertNewsToNewsDto(news);
     }
 
+    /**
+     * Method return all comments from DB
+     * and convert news, comment to newsDto, commentDto
+     *
+     * @param idNews parameter for search news with id, example: /api/v1/news/1
+     * @param pageable object for pagination, if parameters were specified in url, example: /api/v1/news/1/comments?page=0&size=10
+     * @see News
+     * @see NewsDto
+     * @see Comment
+     * @see CommentDto
+     * @throws NoSuchCommentException if comments not found in DB
+     * @return List with commentsDto json
+     */
     @Override
     public List<CommentDto> findAllCommentsByIdNews(long idNews, Pageable pageable) {
         News news = newsMapper.convertNewsDtoToNews(getNewsByID(idNews));
@@ -68,12 +101,26 @@ public class NewsServiceImpl implements NewsService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method returns a single commentDto
+     *
+     * @param idNews parameter for search news with id, example: /api/v1/news/1
+     * @param idComment parameter for search comment with id, example: /api/v1//news/1/comments/1
+     * @see News
+     * @see NewsDto
+     * @see Comment
+     * @see CommentDto
+     * @throws NoSuchNewsException if news not found in DB
+     * @throws NoSuchCommentException if comments not found in DB
+     * @return commentDto json
+     */
     @Override
     public CommentDto getCommentByIDWithIDNews(long idNews, long idComment) {
         NewsDto news = getNewsByID(idNews);
 
         List<CommentDto> commentDtoList = news.getCommentList();
 
+        //search comment id with idComment
         CommentDto commentDto = commentDtoList.stream()
                 .filter(comment -> comment.getIdComment() == idComment)
                 .findFirst()
@@ -82,6 +129,15 @@ public class NewsServiceImpl implements NewsService {
         return commentDto;
     }
 
+    /**
+     * Method for save news in DB
+     * and convert news to newsDto
+     *
+     * @param newsDto object, which comes in the body of the request
+     * @see News
+     * @see NewsDto
+     * @return news json, if save is successful
+     */
     @Override
     public NewsDto saveNews(NewsDto newsDto) {
         News news = newsMapper.convertNewsDtoToNews(newsDto);
@@ -106,6 +162,13 @@ public class NewsServiceImpl implements NewsService {
         return newsMapper.convertNewsToNewsDto(news2);
     }
 
+    /**
+     * Method search news by id and delete it in DB
+     *
+     * @param id parameter, which is used when deleting a newsDto
+     * @throws NoSuchNewsException if news not found in DB
+     * @return info on operation
+     */
     @Override
     public String deleteNews(long id) {
         getNewsByID(id);

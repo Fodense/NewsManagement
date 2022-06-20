@@ -21,6 +21,14 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     private NewsMapper newsMapper;
 
+    /**
+     * Method for search info in table News by title and text fields
+     * and convert news to newsDto
+     *
+     * @param keyWord string for target search
+     * @throws NoSuchDataException no matches found ib DB
+     * @return result search
+     */
     @Override
     public List<NewsDto> searchNews(String keyWord) {
         if (keyWord == null) {

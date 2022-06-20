@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * News DTO class; With fields: idNews, dateCreatedNews, title, text, commentList
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
