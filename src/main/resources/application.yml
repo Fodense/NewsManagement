@@ -16,6 +16,11 @@ spring:
   jackson:
     time-zone: Europe/Minsk
 
+  cache:
+    cache-names: news, comments
+    caffeine:
+      spec: maximumSize=10, expireAfterWrite=1m
+
 springdoc:
   swagger-ui:
     path: /index.html

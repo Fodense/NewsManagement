@@ -12,6 +12,8 @@ import by.brel.newsmanagement.repository.CommentRepository;
 import by.brel.newsmanagement.repository.NewsRepository;
 import by.brel.newsmanagement.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,7 @@ public class NewsServiceImpl implements NewsService {
      * @return List with newsDto json
      */
     @Override
+    @Cacheable("news")
     public List<NewsDto> getAllNewsPaginated(Pageable pageable) {
         Page<News> newsList = newsRepository.findAll(pageable);
 
@@ -89,6 +92,7 @@ public class NewsServiceImpl implements NewsService {
      * @return List with commentsDto json
      */
     @Override
+    @Cacheable(cacheNames = "comments")
     public List<CommentDto> findAllCommentsByIdNews(long idNews, Pageable pageable) {
         News news = newsMapper.convertNewsDtoToNews(getNewsByID(idNews));
 
@@ -139,6 +143,7 @@ public class NewsServiceImpl implements NewsService {
      * @return news json, if save is successful
      */
     @Override
+    @CacheEvict(cacheNames = "news", allEntries = true)
     public NewsDto saveNews(NewsDto newsDto) {
         News news = newsMapper.convertNewsDtoToNews(newsDto);
 
@@ -170,6 +175,7 @@ public class NewsServiceImpl implements NewsService {
      * @return info on operation
      */
     @Override
+    @CacheEvict(cacheNames = "news", allEntries = true)
     public String deleteNews(long id) {
         getNewsByID(id);
 

@@ -7,6 +7,7 @@ import by.brel.newsmanagement.mapper.NewsMapper;
 import by.brel.newsmanagement.repository.NewsRepository;
 import by.brel.newsmanagement.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class SearchServiceImpl implements SearchService {
      * @return result search
      */
     @Override
+    @Cacheable(cacheNames = "news")
     public List<NewsDto> searchNews(String keyWord) {
         if (keyWord == null) {
             throw new NoSuchDataException("Keyword cannot be empty");
