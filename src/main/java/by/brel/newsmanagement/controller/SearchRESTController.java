@@ -17,6 +17,13 @@ public class SearchRESTController {
     @Autowired
     private SearchService searchService;
 
+    /**
+     * Method for search info in table News by title and text fields
+     *
+     * @param keyWord string for target search
+     * @see NewsDto
+     * @return result search
+     */
     @GetMapping("/search")
     public List<NewsDto> searchNews(@RequestParam(value = "keyword", required = false) String keyWord) {
         return searchService.searchNews(keyWord);

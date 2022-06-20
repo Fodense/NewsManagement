@@ -23,6 +23,16 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private CommentMapper commentMapper;
 
+    /**
+     * Method return all comment from DB
+     * and convert comment to commentDto
+     *
+     * @param pageable object for pagination, if parameters were specified in url
+     * @see Comment
+     * @see CommentDto
+     * @throws NoSuchCommentException if comments not found in DB
+     * @return List with commentDto json
+     */
     @Override
     public List<CommentDto> getAllCommentPaginated(Pageable pageable) {
         List<Comment> commentList = commentRepository.findAll(pageable).toList();
@@ -36,6 +46,16 @@ public class CommentServiceImpl implements CommentService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method returns a single comment
+     * and convert comment to commentDto
+     *
+     * @param id parameter for search comment with id
+     * @see Comment
+     * @see CommentDto
+     * @throws NoSuchCommentException if comments not found in DB
+     * @return comment json
+     */
     @Override
     public CommentDto getCommentByID(long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new NoSuchCommentException("There is no comment with ID " + id));
@@ -43,6 +63,13 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.convertCommentToCommentDto(comment);
     }
 
+    /**
+     * Method for save comment in DB
+     * and convert comment to commentDto
+     *
+     * @param commentDto object, which comes in the body of the request
+     * @return commentDto json, if save is successful
+     */
     @Override
     public CommentDto saveComment(CommentDto commentDto) {
         //setting date for new comment
@@ -55,6 +82,14 @@ public class CommentServiceImpl implements CommentService {
         return commentDto;
     }
 
+    /**
+     * Method for update comment in DB
+     * and convert comment to commentDto
+     *
+     * @param commentDto
+     * @param oldCommentDto
+     * @return commentDto json
+     */
     @Override
     public CommentDto updateComment(CommentDto commentDto, CommentDto oldCommentDto) {
         commentDto.setDateCreatedComment(oldCommentDto.getDateCreatedComment());
@@ -65,6 +100,12 @@ public class CommentServiceImpl implements CommentService {
         return commentDto;
     }
 
+    /**
+     * Method for delete comment by id
+     *
+     * @param id parameter, which is used when deleting a commentDto
+     * @return info on operation
+     */
     @Override
     public String deleteComment(long id) {
         getCommentByID(id);
