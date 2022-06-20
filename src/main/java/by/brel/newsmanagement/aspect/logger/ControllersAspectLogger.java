@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,16 +23,13 @@ public class ControllersAspectLogger {
     @Autowired
     private HttpServletResponse response;
 
-    @Pointcut("execution(* by.brel.newsmanagement.controller.*.*(..))")
-    public void controllersMethods() {}
-
-    @Around("controllersMethods()")
+    @Around("by.brel.newsmanagement.aspect.PointCuts.controllersMethods()")
     public Object aroundForControllersMethods(ProceedingJoinPoint joinPoint) {
         Object target = null;
 
-        Map<String, String[]> stringMap = request.getParameterMap();
-
         log.info(request.getMethod() + " " + request.getRequestURI());
+
+        Map<String, String[]> stringMap = request.getParameterMap();
 
         if (!stringMap.isEmpty()) {
             log.info("Parameters:");
@@ -46,10 +42,10 @@ public class ControllersAspectLogger {
         try {
             target = joinPoint.proceed();
 
-        } catch (Throwable e) {
-            log.info(e.getMessage());
+        } catch (Throwable throwable) {
+            log.info(throwable.getMessage());
 
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(throwable.getMessage());
         }
 
         log.info(String.valueOf(response.getStatus()));
