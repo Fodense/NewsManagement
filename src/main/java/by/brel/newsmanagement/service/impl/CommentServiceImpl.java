@@ -3,7 +3,7 @@ package by.brel.newsmanagement.service.impl;
 import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.entity.Comment;
 import by.brel.newsmanagement.exception_handling.exception.NoSuchCommentException;
-import by.brel.newsmanagement.mapper.MapperComment;
+import by.brel.newsmanagement.mapper.CommentMapper;
 import by.brel.newsmanagement.repository.CommentRepository;
 import by.brel.newsmanagement.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private MapperComment mapperComment;
+    private CommentMapper commentMapper;
 
     @Override
     public List<CommentDto> getAllCommentPaginated(Pageable pageable) {
@@ -32,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         return commentList.stream()
-                .map(comment -> mapperComment.convertCommentToCommentDto(comment))
+                .map(comment -> commentMapper.convertCommentToCommentDto(comment))
                 .collect(Collectors.toList());
     }
 
@@ -40,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto getCommentByID(long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new NoSuchCommentException("There is no comment with ID " + id));
 
-        return mapperComment.convertCommentToCommentDto(comment);
+        return commentMapper.convertCommentToCommentDto(comment);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class CommentServiceImpl implements CommentService {
         //setting date for new comment
         commentDto.setDateCreatedComment(LocalDateTime.now());
 
-        Comment comment = commentRepository.save(mapperComment.convertCommentDtoToComment(commentDto));
+        Comment comment = commentRepository.save(commentMapper.convertCommentDtoToComment(commentDto));
 
         commentDto.setIdComment(comment.getIdComment());
 
@@ -60,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
         commentDto.setDateCreatedComment(oldCommentDto.getDateCreatedComment());
         commentDto.setIdNews(oldCommentDto.getIdNews());
 
-        commentRepository.save(mapperComment.convertCommentDtoToComment(commentDto));
+        commentRepository.save(commentMapper.convertCommentDtoToComment(commentDto));
 
         return commentDto;
     }

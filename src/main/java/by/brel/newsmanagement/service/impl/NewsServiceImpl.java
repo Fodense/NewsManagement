@@ -6,8 +6,8 @@ import by.brel.newsmanagement.entity.Comment;
 import by.brel.newsmanagement.entity.News;
 import by.brel.newsmanagement.exception_handling.exception.NoSuchCommentException;
 import by.brel.newsmanagement.exception_handling.exception.NoSuchNewsException;
-import by.brel.newsmanagement.mapper.MapperComment;
-import by.brel.newsmanagement.mapper.MapperNews;
+import by.brel.newsmanagement.mapper.CommentMapper;
+import by.brel.newsmanagement.mapper.NewsMapper;
 import by.brel.newsmanagement.repository.CommentRepository;
 import by.brel.newsmanagement.repository.NewsRepository;
 import by.brel.newsmanagement.service.NewsService;
@@ -30,10 +30,10 @@ public class NewsServiceImpl implements NewsService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private MapperNews mapperNews;
+    private NewsMapper newsMapper;
 
     @Autowired
-    private MapperComment mapperComment;
+    private CommentMapper commentMapper;
 
     @Override
     public List<NewsDto> getAllNewsPaginated(Pageable pageable) {
@@ -44,7 +44,7 @@ public class NewsServiceImpl implements NewsService {
         }
 
         return newsList.toList().stream()
-                .map(news -> mapperNews.convertNewsToNewsDto(news))
+                .map(news -> newsMapper.convertNewsToNewsDto(news))
                 .collect(Collectors.toList());
     }
 
@@ -52,19 +52,19 @@ public class NewsServiceImpl implements NewsService {
     public NewsDto getNewsByID(long id) {
         News news = newsRepository.findById(id).orElseThrow(() -> new NoSuchNewsException("There is no news with ID " + id));
 
-        return mapperNews.convertNewsToNewsDto(news);
+        return newsMapper.convertNewsToNewsDto(news);
     }
 
     @Override
     public List<CommentDto> findAllCommentsByIdNews(long idNews, Pageable pageable) {
-        News news = mapperNews.convertNewsDtoToNews(getNewsByID(idNews));
+        News news = newsMapper.convertNewsDtoToNews(getNewsByID(idNews));
 
         if (news.getCommentList().isEmpty()) {
             throw new NoSuchCommentException("News with ID " + idNews + " has no comments");
         }
 
         return commentRepository.findAllCommentsByNews(news, pageable).stream()
-                .map(comment -> mapperComment.convertCommentToCommentDto(comment))
+                .map(comment -> commentMapper.convertCommentToCommentDto(comment))
                 .collect(Collectors.toList());
     }
 
@@ -84,7 +84,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public NewsDto saveNews(NewsDto newsDto) {
-        News news = mapperNews.convertNewsDtoToNews(newsDto);
+        News news = newsMapper.convertNewsDtoToNews(newsDto);
 
         List<Comment> commentList = news.getCommentList();
 
@@ -103,7 +103,7 @@ public class NewsServiceImpl implements NewsService {
 
         News news2 = newsRepository.save(news);
 
-        return mapperNews.convertNewsToNewsDto(news2);
+        return newsMapper.convertNewsToNewsDto(news2);
     }
 
     @Override

@@ -3,7 +3,7 @@ package by.brel.newsmanagement.service.impl;
 import by.brel.newsmanagement.dto.NewsDto;
 import by.brel.newsmanagement.entity.News;
 import by.brel.newsmanagement.exception_handling.exception.NoSuchDataException;
-import by.brel.newsmanagement.mapper.MapperNews;
+import by.brel.newsmanagement.mapper.NewsMapper;
 import by.brel.newsmanagement.repository.NewsRepository;
 import by.brel.newsmanagement.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class SearchServiceImpl implements SearchService {
     private NewsRepository newsRepository;
 
     @Autowired
-    private MapperNews mapperNews;
+    private NewsMapper newsMapper;
 
     @Override
     public List<NewsDto> searchNews(String keyWord) {
@@ -34,7 +34,7 @@ public class SearchServiceImpl implements SearchService {
         }
 
         return newsList.stream()
-                .map(news -> mapperNews.convertNewsToNewsDto(news))
+                .map(news -> newsMapper.convertNewsToNewsDto(news))
                 .collect(Collectors.toList());
     }
 }
