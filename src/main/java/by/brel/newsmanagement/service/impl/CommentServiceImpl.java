@@ -7,6 +7,8 @@ import by.brel.newsmanagement.mapper.CommentMapper;
 import by.brel.newsmanagement.repository.CommentRepository;
 import by.brel.newsmanagement.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,7 @@ public class CommentServiceImpl implements CommentService {
      * @return List with commentDto json
      */
     @Override
+    @Cacheable(cacheNames = "comments")
     public List<CommentDto> getAllCommentPaginated(Pageable pageable) {
         List<Comment> commentList = commentRepository.findAll(pageable).toList();
 
@@ -71,6 +74,7 @@ public class CommentServiceImpl implements CommentService {
      * @return commentDto json, if save is successful
      */
     @Override
+    @CacheEvict(cacheNames = "comments", allEntries = true)
     public CommentDto saveComment(CommentDto commentDto) {
         //setting date for new comment
         commentDto.setDateCreatedComment(LocalDateTime.now());
@@ -91,6 +95,7 @@ public class CommentServiceImpl implements CommentService {
      * @return commentDto json
      */
     @Override
+    @CacheEvict(cacheNames = "comments", allEntries = true)
     public CommentDto updateComment(CommentDto commentDto, CommentDto oldCommentDto) {
         commentDto.setDateCreatedComment(oldCommentDto.getDateCreatedComment());
         commentDto.setIdNews(oldCommentDto.getIdNews());
@@ -107,6 +112,7 @@ public class CommentServiceImpl implements CommentService {
      * @return info on operation
      */
     @Override
+    @CacheEvict(cacheNames = "comments", allEntries = true)
     public String deleteComment(long id) {
         getCommentByID(id);
 
