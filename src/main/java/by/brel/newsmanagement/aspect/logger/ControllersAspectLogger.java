@@ -1,9 +1,10 @@
 package by.brel.newsmanagement.aspect.logger;
 
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,10 +24,8 @@ public class ControllersAspectLogger {
     @Autowired
     private HttpServletResponse response;
 
-    @Around("by.brel.newsmanagement.aspect.PointCuts.controllersMethods()")
-    public Object aroundForControllersMethods(ProceedingJoinPoint joinPoint) {
-        Object target = null;
-
+    @Before("by.brel.newsmanagement.aspect.PointCuts.controllersMethods()")
+    public void beforeControllersMethods(JoinPoint joinPoint) {
         log.info(request.getMethod() + " " + request.getRequestURI());
 
         Map<String, String[]> stringMap = request.getParameterMap();
@@ -38,18 +37,10 @@ public class ControllersAspectLogger {
                 log.info(entry.getKey() + "=" + Arrays.toString(entry.getValue()));
             }
         }
+    }
 
-        try {
-            target = joinPoint.proceed();
-
-        } catch (Throwable throwable) {
-            log.info(throwable.getMessage());
-
-            throw new RuntimeException(throwable.getMessage());
-        }
-
+    @AfterReturning(value = "by.brel.newsmanagement.aspect.PointCuts.controllersMethods()")
+    public void afterReturningControllersMethods() {
         log.info(String.valueOf(response.getStatus()));
-
-        return target;
     }
 }
