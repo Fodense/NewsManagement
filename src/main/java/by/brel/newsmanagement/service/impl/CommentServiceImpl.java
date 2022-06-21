@@ -28,6 +28,7 @@ public class CommentServiceImpl implements CommentService {
     /**
      * Method return all comment from DB
      * and convert comment to commentDto
+     * This method caches the result
      *
      * @param pageable object for pagination, if parameters were specified in url
      * @see Comment
@@ -69,6 +70,7 @@ public class CommentServiceImpl implements CommentService {
     /**
      * Method for save comment in DB
      * and convert comment to commentDto
+     * This method resets the cache
      *
      * @param commentDto object, which comes in the body of the request
      * @return commentDto json, if save is successful
@@ -89,6 +91,7 @@ public class CommentServiceImpl implements CommentService {
     /**
      * Method for update comment in DB
      * and convert comment to commentDto
+     * This method resets the cache
      *
      * @param commentDto
      * @param oldCommentDto
@@ -107,6 +110,7 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * Method for delete comment by id
+     * This method resets the cache
      *
      * @param id parameter, which is used when deleting a commentDto
      * @return info on operation

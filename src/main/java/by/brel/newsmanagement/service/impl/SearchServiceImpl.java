@@ -25,6 +25,7 @@ public class SearchServiceImpl implements SearchService {
     /**
      * Method for search info in table News by title and text fields
      * and convert news to newsDto
+     * This method caches the result
      *
      * @param keyWord string for target search
      * @throws NoSuchDataException no matches found ib DB
