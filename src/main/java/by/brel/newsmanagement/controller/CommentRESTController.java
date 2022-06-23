@@ -24,7 +24,7 @@ public class CommentRESTController {
     /**
      * Method return all commentDto from DB
      *
-     * @param pageable object for pagination, if parameters were specified in url, example: /api/v1/comments?page=0&size=10
+     * @param pageable object for pagination, if parameters were specified in url
      * @see CommentDto
      * @return List with commentDto json
      */
