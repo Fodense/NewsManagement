@@ -93,8 +93,8 @@ public class CommentServiceImpl implements CommentService {
      * and convert comment to commentDto
      * This method resets the cache
      *
-     * @param commentDto
-     * @param oldCommentDto
+     * @param commentDto new object, which comes in the body of the request
+     * @param oldCommentDto old object, which comes in the body of the request
      * @return commentDto json
      */
     @Override

@@ -1,9 +1,7 @@
 package by.brel.newsmanagement;
 
 import by.brel.newsmanagement.controller.CommentRESTController;
-import by.brel.newsmanagement.controller.NewsRESTController;
 import by.brel.newsmanagement.dto.CommentDto;
-import by.brel.newsmanagement.dto.NewsDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -16,10 +14,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

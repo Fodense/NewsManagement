@@ -30,7 +30,7 @@ public class NewsRESTController {
     /**
      * Method return all newsDto with it CommentsDto from DB
      *
-     * @param pageable object for pagination, if parameters were specified in url, example: /api/v1/news?page=0&size=10
+     * @param pageable object for pagination, if parameters were specified in url
      * @see NewsDto
      * @return List with newsDto json
      */
@@ -54,7 +54,7 @@ public class NewsRESTController {
     /**
      * Method return all commentsDto from DB
      *
-     * @param pageable object for pagination, if parameters were specified in url, example: /api/v1/news/1/comments?page=0&size=10
+     * @param pageable object for pagination, if parameters were specified in url
      * @param idNews parameter for search newsDto with id, example: /api/v1/news/1
      * @see NewsDto
      * @see CommentDto

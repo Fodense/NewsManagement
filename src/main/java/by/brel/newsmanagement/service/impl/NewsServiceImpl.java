@@ -85,7 +85,7 @@ public class NewsServiceImpl implements NewsService {
      * This method caches the result
      *
      * @param idNews parameter for search news with id, example: /api/v1/news/1
-     * @param pageable object for pagination, if parameters were specified in url, example: /api/v1/news/1/comments?page=0&size=10
+     * @param pageable object for pagination, if parameters were specified in url
      * @see News
      * @see NewsDto
      * @see Comment
