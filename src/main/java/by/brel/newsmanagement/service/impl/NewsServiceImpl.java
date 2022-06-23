@@ -40,6 +40,7 @@ public class NewsServiceImpl implements NewsService {
     /**
      * Method return all News with it Comments from DB or throw Exception
      * and convert news to newsDto
+     * This method caches the result
      *
      * @param pageable object for pagination, if parameters were specified in url
      * @see News
@@ -81,6 +82,7 @@ public class NewsServiceImpl implements NewsService {
     /**
      * Method return all comments from DB
      * and convert news, comment to newsDto, commentDto
+     * This method caches the result
      *
      * @param idNews parameter for search news with id, example: /api/v1/news/1
      * @param pageable object for pagination, if parameters were specified in url, example: /api/v1/news/1/comments?page=0&size=10
@@ -136,6 +138,7 @@ public class NewsServiceImpl implements NewsService {
     /**
      * Method for save news in DB
      * and convert news to newsDto
+     * This method resets the cache
      *
      * @param newsDto object, which comes in the body of the request
      * @see News
@@ -169,6 +172,7 @@ public class NewsServiceImpl implements NewsService {
 
     /**
      * Method search news by id and delete it in DB
+     * This method resets the cache
      *
      * @param id parameter, which is used when deleting a newsDto
      * @throws NoSuchNewsException if news not found in DB

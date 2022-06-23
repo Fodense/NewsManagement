@@ -1,0 +1,58 @@
+version: "3.9"
+services:
+  app:
+    container_name: newsManagement
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: java -jar ./app.jar
+    environment:
+      - PORT=8081
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres/dev_NewsManagement
+    image: springboot-app
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres_container
+    image: postgres:13.0
+    hostname: postgres
+    environment:
+      POSTGRES_DB: "dev_NewsManagement"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "111111"
+    volumes:
+      - ./src/main/resources/db:/docker-entrypoint-initdb.d
+    restart: always
+    ports:
+      - "6543:5432"
+
+  postgres_test:
+    container_name: postgres_container_test
+    image: postgres:13.0
+    hostname: postgres_test
+    environment:
+      POSTGRES_DB: "test_NewsManagement"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "111111"
+    volumes:
+      - ./src/test/resources/db:/docker-entrypoint-initdb.d
+    restart: always
+    ports:
+      - "6544:5432"
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:5.7
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "news@Management.com"
+      PGADMIN_DEFAULT_PASSWORD: "1111"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - postgres_test
+

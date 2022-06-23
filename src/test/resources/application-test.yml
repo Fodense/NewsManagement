@@ -1,12 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/dev_NewsManagement
+    url: jdbc:postgresql://localhost:6544/test_NewsManagement
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: 111111
-
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:db/schema.sql
-      data-locations: classpath:db/data.sql
