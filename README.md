@@ -39,8 +39,6 @@ Java 11, Gradle, Spring boot, Open API 3, Cache, PostgreSQL, Lombok, unit and in
   
     get /api/v1/news/search?keyword=...
 
-- При старте приложения бд наполняется автоматически, как в dev, так и в test режимах.
-
 - Написаны юнит и интеграционные тесты
 
 - Запрос и ответы логированы с помощью AOP
@@ -72,6 +70,8 @@ Java 11, Gradle, Spring boot, Open API 3, Cache, PostgreSQL, Lombok, unit and in
   - Настройки описаны в .yml файле
 
 - Реализовано кеширование.
+
+- UI отсутсвует. Работа с json
 
 Для старта нужно сделать build проекта с промощью Gradle;
 
