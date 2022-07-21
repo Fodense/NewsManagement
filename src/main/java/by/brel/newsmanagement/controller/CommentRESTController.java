@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -29,8 +31,8 @@ public class CommentRESTController {
      * @return List with commentDto json
      */
     @GetMapping("/comments")
-    public List<CommentDto> getAllComment(@PageableDefault(sort = "idComment", direction = Sort.Direction.ASC) Pageable pageable) {
-        return commentService.getAllCommentPaginated(pageable);
+    public ResponseEntity<List<CommentDto>> getAllComment(@PageableDefault(sort = "idComment", direction = Sort.Direction.ASC) Pageable pageable) {
+        return new ResponseEntity<>(commentService.getAllCommentPaginated(pageable), HttpStatus.OK);
     }
 
     /**
@@ -41,8 +43,8 @@ public class CommentRESTController {
      * @return commentDto json
      */
     @GetMapping("/comments/{id}")
-    public CommentDto getCommentByID(@PathVariable long id) {
-        return commentService.getCommentByID(id);
+    public ResponseEntity<CommentDto> getCommentByID(@PathVariable @NotNull long id) {
+        return new ResponseEntity<>(commentService.getCommentByID(id), HttpStatus.OK);
     }
 
     /**
@@ -53,8 +55,8 @@ public class CommentRESTController {
      * @return commentDto json, if save is successful
      */
     @PostMapping("/comments")
-    public CommentDto saveComment(@RequestBody CommentDto commentDto) {
-        return commentService.saveComment(commentDto);
+    public ResponseEntity<CommentDto> saveComment(@Valid @RequestBody CommentDto commentDto) {
+        return new ResponseEntity<>(commentService.saveComment(commentDto), HttpStatus.OK);
     }
 
     /**
@@ -65,8 +67,8 @@ public class CommentRESTController {
      * @return commentDto json, if update is successful
      */
     @PutMapping("/comments")
-    public CommentDto updateComment(@RequestBody CommentDto commentDto) {
-        return commentService.saveComment(commentDto);
+    public ResponseEntity<CommentDto> updateComment(@Valid @RequestBody CommentDto commentDto) {
+        return new ResponseEntity<>(commentService.saveComment(commentDto), HttpStatus.OK);
     }
 
     /**
@@ -79,7 +81,7 @@ public class CommentRESTController {
      * @return json with info on operation
      */
     @DeleteMapping("/comments/{id}")
-    public ResponseEntity<DefaultResponseData> deleteComment(@PathVariable long id, HttpServletRequest request) {
+    public ResponseEntity<DefaultResponseData> deleteComment(@PathVariable @NotNull long id, HttpServletRequest request) {
         String response = commentService.deleteComment(id);
 
         DefaultResponseData data = new DefaultResponseData();
@@ -88,5 +90,4 @@ public class CommentRESTController {
 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
-
 }

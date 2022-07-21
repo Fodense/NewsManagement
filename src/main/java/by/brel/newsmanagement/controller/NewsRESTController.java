@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -35,8 +37,8 @@ public class NewsRESTController {
      * @return List with newsDto json
      */
     @GetMapping("/news")
-    public List<NewsDto> getAllNews(@PageableDefault(sort = "idNews", direction = Sort.Direction.ASC) Pageable pageable) {
-        return newsService.getAllNewsPaginated(pageable);
+    public ResponseEntity<List<NewsDto>> getAllNews(@PageableDefault(sort = "idNews", direction = Sort.Direction.ASC) Pageable pageable) {
+        return new ResponseEntity<>(newsService.getAllNewsPaginated(pageable), HttpStatus.OK);
     }
 
     /**
@@ -47,8 +49,8 @@ public class NewsRESTController {
      * @return newsDto json
      */
     @GetMapping("/news/{idNews}")
-    public NewsDto getNewsByID(@PathVariable long idNews) {
-        return newsService.getNewsByID(idNews);
+    public ResponseEntity<NewsDto> getNewsByID(@PathVariable @NotNull long idNews) {
+        return new ResponseEntity<>(newsService.getNewsByID(idNews), HttpStatus.OK);
     }
 
     /**
@@ -61,12 +63,12 @@ public class NewsRESTController {
      * @return List with commentsDto json
      */
     @GetMapping("/news/{idNews}/comments")
-    public List<CommentDto> getAllCommentByIDNews(@PageableDefault(sort = "idComment", direction = Sort.Direction.ASC) Pageable pageable,
-                                                  @PathVariable long idNews
+    public ResponseEntity<List<CommentDto>> getAllCommentByIDNews(@PageableDefault(sort = "idComment", direction = Sort.Direction.ASC) Pageable pageable,
+                                                  @PathVariable @NotNull long idNews
     ) {
         List<CommentDto> commentDtoList = newsService.findAllCommentsByIdNews(idNews, pageable);
 
-        return commentDtoList;
+        return new ResponseEntity<>(commentDtoList, HttpStatus.OK);
     }
 
     /**
@@ -79,10 +81,10 @@ public class NewsRESTController {
      * @return commentDto json
      */
     @GetMapping("/news/{idNews}/comments/{idComment}")
-    public CommentDto getCommentByIDWithIDNews(@PathVariable long idNews, @PathVariable long idComment) {
+    public ResponseEntity<CommentDto> getCommentByIDWithIDNews(@PathVariable @NotNull long idNews, @PathVariable @NotNull long idComment) {
         CommentDto commentDto = newsService.getCommentByIDWithIDNews(idNews, idComment);
 
-        return commentDto;
+        return new ResponseEntity<>(commentDto, HttpStatus.OK);
     }
 
     /**
@@ -93,8 +95,10 @@ public class NewsRESTController {
      * @return newsDto json, if save is successful
      */
     @PostMapping("/news")
-    public NewsDto saveNews(@RequestBody NewsDto newsDto) {
-        return newsService.saveNews(newsDto);
+    public ResponseEntity<NewsDto> saveNews(@Valid @RequestBody NewsDto newsDto) {
+        NewsDto newsDto2 = newsService.saveNews(newsDto);
+
+        return new ResponseEntity<>(newsDto2, HttpStatus.CREATED);
     }
 
     /**
@@ -107,14 +111,14 @@ public class NewsRESTController {
      * @return commentDto json, if save is successful
      */
     @PostMapping("/news/{idNews}/comments")
-    public CommentDto saveCommentsByIDNews(@PathVariable long idNews, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<CommentDto> saveCommentsByIDNews(@PathVariable @NotNull long idNews, @Valid @RequestBody CommentDto commentDto) {
         NewsDto newsDto = newsService.getNewsByID(idNews);
 
         commentDto.setIdNews(newsDto.getIdNews());
 
         commentService.saveComment(commentDto);
 
-        return commentDto;
+        return new ResponseEntity<>(commentDto, HttpStatus.CREATED);
     }
 
     /**
@@ -125,8 +129,8 @@ public class NewsRESTController {
      * @return newsDto json, if update is successful
      */
     @PutMapping("/news")
-    public NewsDto updateNews(@RequestBody NewsDto newsDto) {
-        return newsService.saveNews(newsDto);
+    public ResponseEntity<NewsDto> updateNews(@Valid @RequestBody NewsDto newsDto) {
+        return new ResponseEntity<>(newsService.saveNews(newsDto), HttpStatus.OK);
     }
 
     /**
@@ -139,7 +143,7 @@ public class NewsRESTController {
      * @return comment json, if update is successful
      */
     @PutMapping("/news/{idNews}/comments")
-    public CommentDto updateCommentByIDNews(@PathVariable long idNews, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<CommentDto> updateCommentByIDNews(@PathVariable @NotNull long idNews, @Valid @RequestBody CommentDto commentDto) {
         NewsDto newsDto = newsService.getNewsByID(idNews);
 
         CommentDto oldCommentDto = newsDto.getCommentList().stream()
@@ -147,7 +151,7 @@ public class NewsRESTController {
                 .findFirst()
                 .orElse(null);
 
-        return commentService.updateComment(commentDto, oldCommentDto);
+        return new ResponseEntity<>(commentService.updateComment(commentDto, oldCommentDto), HttpStatus.OK);
     }
 
     /**
@@ -160,7 +164,7 @@ public class NewsRESTController {
      * @return json with info on operation
      */
     @DeleteMapping("/news/{idNews}")
-    public ResponseEntity<DefaultResponseData> deleteNewsByID(@PathVariable long idNews, HttpServletRequest request) {
+    public ResponseEntity<DefaultResponseData> deleteNewsByID(@PathVariable @NotNull long idNews, HttpServletRequest request) {
         String response = newsService.deleteNews(idNews);
 
         DefaultResponseData data = new DefaultResponseData();
@@ -180,8 +184,8 @@ public class NewsRESTController {
      * @return json with info on operation
      */
     @DeleteMapping("/news/{idNews}/comments/{idComment}")
-    public ResponseEntity<DefaultResponseData> deleteCommentByIDWithIDNews(@PathVariable long idNews, @PathVariable long idComment, HttpServletRequest request) {
-        NewsDto newsDto = getNewsByID(idNews);
+    public ResponseEntity<DefaultResponseData> deleteCommentByIDWithIDNews(@PathVariable @NotNull long idNews, @PathVariable @NotNull long idComment, HttpServletRequest request) {
+        NewsDto newsDto = newsService.getNewsByID(idNews);
 
         // check for comments on this post
         newsDto.getCommentList().stream()

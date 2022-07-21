@@ -42,6 +42,8 @@ services:
     restart: always
     ports:
       - "6544:5432"
+    depends_on:
+      - postgres
 
   pgadmin:
     container_name: pgadmin_container
@@ -54,5 +56,4 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
-      - postgres_test
 

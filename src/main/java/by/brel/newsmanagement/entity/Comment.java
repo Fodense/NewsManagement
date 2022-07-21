@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -20,15 +22,21 @@ public class Comment implements Serializable {
     @Column(name = "id_comment")
     private Long idComment;
 
+    @NotNull
     @Column(name = "date")
     private LocalDateTime dateCreatedComment;
 
+    @NotNull
+    @Size(max = 2046)
     @Column(name = "text")
     private String text;
 
+    @NotNull
+    @Size(max = 127)
     @Column(name = "user_id")
     private String idUser;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "news_id")
     private News news;

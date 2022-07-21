@@ -34,10 +34,6 @@ public class SearchServiceImpl implements SearchService {
     @Override
     @Cacheable(cacheNames = "news")
     public List<NewsDto> searchNews(String keyWord) {
-        if (keyWord == null) {
-            throw new NoSuchDataException("Keyword cannot be empty");
-        }
-
         List<News> newsList = newsRepository.findAllByTitleContainingOrTextContaining(keyWord, keyWord);
 
         if (newsList.isEmpty()) {
