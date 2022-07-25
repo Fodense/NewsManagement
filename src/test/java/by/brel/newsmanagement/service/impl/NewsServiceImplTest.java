@@ -1,7 +1,7 @@
 package by.brel.newsmanagement.service.impl;
 
 import by.brel.newsmanagement.entity.Comment;
-import by.brel.newsmanagement.entity.News;
+import by.brel.newsmanagement.entity.news.News;
 import by.brel.newsmanagement.repository.CommentRepository;
 import by.brel.newsmanagement.repository.NewsRepository;
 import org.junit.Before;
