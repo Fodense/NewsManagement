@@ -3,7 +3,7 @@ package by.brel.newsmanagement.service.impl;
 import by.brel.newsmanagement.dto.CommentDto;
 import by.brel.newsmanagement.dto.NewsDto;
 import by.brel.newsmanagement.entity.Comment;
-import by.brel.newsmanagement.entity.News;
+import by.brel.newsmanagement.entity.news.News;
 import by.brel.newsmanagement.exception_handling.exception.NoSuchCommentException;
 import by.brel.newsmanagement.exception_handling.exception.NoSuchNewsException;
 import by.brel.newsmanagement.mapper.CommentMapper;
