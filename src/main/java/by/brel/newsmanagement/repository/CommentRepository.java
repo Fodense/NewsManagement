@@ -1,7 +1,7 @@
 package by.brel.newsmanagement.repository;
 
 import by.brel.newsmanagement.entity.Comment;
-import by.brel.newsmanagement.entity.News;
+import by.brel.newsmanagement.entity.news.News;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,6 +1,7 @@
 package by.brel.newsmanagement.controller;
 
 import by.brel.newsmanagement.dto.NewsDto;
+import by.brel.newsmanagement.entity.news.NewsSpecification;
 import by.brel.newsmanagement.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,6 @@ public class SearchRESTController {
      */
     @GetMapping("/search")
     public ResponseEntity<List<NewsDto>> searchNews(@RequestParam(value = "keyword") @NotNull String keyWord) {
-        return new ResponseEntity<>(searchService.searchNews(keyWord), HttpStatus.OK);
+        return new ResponseEntity<>(searchService.searchNews(new NewsSpecification(keyWord)), HttpStatus.OK);
     }
 }

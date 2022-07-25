@@ -49,7 +49,7 @@ public class SearchRESTControllerTest {
     public void searchNews() throws Exception {
         List<NewsDto> newsDtoList = List.of(news, news2);
 
-        given(searchService.searchNews(Mockito.anyString())).willReturn(newsDtoList);
+        given(searchService.searchNews(Mockito.any())).willReturn(newsDtoList);
 
         mockMvc.perform(get("/api/v1/news/search")
                         .param("keyword", Mockito.anyString())
@@ -61,6 +61,6 @@ public class SearchRESTControllerTest {
                 .andExpect(jsonPath("$[0].idNews", is(1)))
                 .andExpect(jsonPath("$[1].idNews", is(2)));
 
-        verify(searchService, times(1)).searchNews(Mockito.anyString());
+        verify(searchService, times(1)).searchNews(Mockito.any());
     }
 }

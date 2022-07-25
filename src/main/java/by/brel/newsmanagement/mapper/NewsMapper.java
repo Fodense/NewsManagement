@@ -1,7 +1,7 @@
 package by.brel.newsmanagement.mapper;
 
 import by.brel.newsmanagement.dto.NewsDto;
-import by.brel.newsmanagement.entity.News;
+import by.brel.newsmanagement.entity.news.News;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
