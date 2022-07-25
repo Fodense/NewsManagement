@@ -48,7 +48,7 @@ class SearchIntegrationTests {
     @Test
     public void testSearchNews_badRequest() throws Exception {
         mockMvc.perform(get("/api/v1/news/search")
-                        .param("keyword", "2")
+                        .param("keyword", "222222")
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())

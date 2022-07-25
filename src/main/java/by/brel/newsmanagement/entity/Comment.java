@@ -1,5 +1,6 @@
 package by.brel.newsmanagement.entity;
 
+import by.brel.newsmanagement.entity.news.News;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -98,7 +98,7 @@ public class NewsRESTController {
     public ResponseEntity<NewsDto> saveNews(@Valid @RequestBody NewsDto newsDto) {
         NewsDto newsDto2 = newsService.saveNews(newsDto);
 
-        return new ResponseEntity<>(newsDto2, HttpStatus.CREATED);
+        return new ResponseEntity<>(newsDto2, HttpStatus.OK);
     }
 
     /**
@@ -118,7 +118,7 @@ public class NewsRESTController {
 
         commentService.saveComment(commentDto);
 
-        return new ResponseEntity<>(commentDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(commentDto, HttpStatus.OK);
     }
 
     /**
